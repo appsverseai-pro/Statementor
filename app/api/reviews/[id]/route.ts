@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
 import { z } from 'zod'
 
 const moderateSchema = z.object({
@@ -10,6 +11,12 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Only admins may moderate reviews
+    const cookieStore = await cookies()
+    if (cookieStore.get('admin_session')?.value !== 'authenticated') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const { id } = await params
     const body = await request.json()
     const data = moderateSchema.parse(body)

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { z } from 'zod'
+import { timingSafeEqual } from 'crypto'
 
 const loginSchema = z.object({
   password: z.string().min(1),
@@ -14,18 +15,23 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { password } = loginSchema.parse(body)
 
-    // Simple password check against env var
+    // Timing-safe password comparison to prevent timing attacks
     const adminPassword = process.env.ADMIN_PASSWORD ?? 'admin123'
+    const passwordBuffer = Buffer.from(password)
+    const adminBuffer = Buffer.from(adminPassword)
+    const passwordsMatch =
+      passwordBuffer.length === adminBuffer.length &&
+      timingSafeEqual(passwordBuffer, adminBuffer)
 
-    if (password !== adminPassword) {
+    if (!passwordsMatch) {
       return NextResponse.json({ error: 'Invalid password' }, { status: 401 })
     }
 
     const cookieStore = await cookies()
     cookieStore.set(ADMIN_TOKEN, SESSION_VALUE, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: true,
+      sameSite: 'strict',
       maxAge: 60 * 60 * 24, // 24 hours
       path: '/',
     })

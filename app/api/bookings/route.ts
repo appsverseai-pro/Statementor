@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
 import { z } from 'zod'
+import { rateLimit, getClientIp } from '@/lib/rate-limit'
 
 const bookingSchema = z.object({
   mentorId: z.string().min(1),
@@ -12,6 +14,13 @@ const bookingSchema = z.object({
 })
 
 export async function POST(request: NextRequest) {
+  // Rate limit: 10 booking submissions per IP per minute
+  const ip = getClientIp(request)
+  const { allowed } = rateLimit(ip, 10, 60_000)
+  if (!allowed) {
+    return NextResponse.json({ error: 'Too many requests. Please wait before submitting again.' }, { status: 429 })
+  }
+
   try {
     const body = await request.json()
     const data = bookingSchema.parse(body)
@@ -63,6 +72,12 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
+    // Only admins may list all bookings
+    const cookieStore = await cookies()
+    if (cookieStore.get('admin_session')?.value !== 'authenticated') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     if (!supabaseUrl || supabaseUrl === 'your_supabase_url') {
       return NextResponse.json([])

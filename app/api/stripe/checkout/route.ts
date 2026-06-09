@@ -50,10 +50,13 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Update booking with stripe session id
+    // Update booking with stripe session id (use internal secret to authorize server-to-server call)
     await fetch(`${appUrl}/api/bookings/${data.bookingId}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-internal-secret': process.env.INTERNAL_API_SECRET ?? '',
+      },
       body: JSON.stringify({ stripe_session_id: session.id }),
     })
 

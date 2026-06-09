@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { rateLimit, getClientIp } from '@/lib/rate-limit'
 
 const reviewSchema = z.object({
   mentorId: z.string().min(1),
@@ -10,6 +11,13 @@ const reviewSchema = z.object({
 })
 
 export async function POST(request: NextRequest) {
+  // Rate limit: 10 review submissions per IP per minute
+  const ip = getClientIp(request)
+  const { allowed } = rateLimit(ip, 10, 60_000)
+  if (!allowed) {
+    return NextResponse.json({ error: 'Too many requests. Please wait before submitting again.' }, { status: 429 })
+  }
+
   try {
     const body = await request.json()
     const data = reviewSchema.parse(body)
@@ -21,6 +29,33 @@ export async function POST(request: NextRequest) {
 
     const { createServiceClient } = await import('@/lib/supabase/server')
     const supabase = await createServiceClient()
+
+    // Verify the booking exists and belongs to a completed/confirmed session before accepting the review
+    if (data.bookingId) {
+      const { data: booking, error: bookingError } = await supabase
+        .from('bookings')
+        .select('id, booking_status, payment_status')
+        .eq('id', data.bookingId)
+        .single()
+
+      if (bookingError || !booking) {
+        return NextResponse.json({ error: 'Booking not found' }, { status: 404 })
+      }
+
+      if (booking.booking_status !== 'completed' && booking.booking_status !== 'confirmed') {
+        return NextResponse.json(
+          { error: 'Reviews can only be submitted for completed or confirmed bookings' },
+          { status: 403 }
+        )
+      }
+
+      if (booking.payment_status !== 'paid') {
+        return NextResponse.json(
+          { error: 'Reviews can only be submitted for paid bookings' },
+          { status: 403 }
+        )
+      }
+    }
 
     const { data: review, error } = await supabase
       .from('reviews')

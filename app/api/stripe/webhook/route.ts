@@ -28,10 +28,13 @@ export async function POST(request: NextRequest) {
     if (bookingId) {
       const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
 
-      // Update booking payment status
+      // Update booking payment status (use internal secret to authorize server-to-server call)
       await fetch(`${appUrl}/api/bookings/${bookingId}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-internal-secret': process.env.INTERNAL_API_SECRET ?? '',
+        },
         body: JSON.stringify({
           payment_status: 'paid',
           booking_status: 'confirmed',
