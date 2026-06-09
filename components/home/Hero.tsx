@@ -33,7 +33,7 @@ export default function Hero() {
 
           {/* Subheadline - more casual and relatable */}
           <p className="text-lg text-cream/80 sm:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
-            Skip the guesswork. Book a 1-on-1 session with a real All-State musician who knows your exact audition, your excerpts, and what it actually takes to get in.
+            Learn from first hand experience in preparing, recording and auditioning for All State. Get the tips and tricks, and know exactly what to expect.
           </p>
 
           {/* CTAs */}
