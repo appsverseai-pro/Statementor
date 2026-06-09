@@ -19,10 +19,10 @@ export default function Hero() {
 
       <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
         <div className="mx-auto max-w-3xl text-center">
-          {/* Badge - fun and friendly */}
+          {/* Badge */}
           <div className="inline-flex items-center rounded-full bg-gold/25 border border-gold/40 px-4 py-1.5 text-gold text-sm font-bold mb-6 tracking-wide">
             <span className="mr-2">🎶</span>
-            Made by students, for students
+            Upperclassmen giving back
           </div>
 
           {/* Headline */}
@@ -31,35 +31,35 @@ export default function Hero() {
             <span className="text-gold">All State</span>
           </h1>
 
-          {/* Subheadline - more casual and relatable */}
+          {/* Subheadline */}
           <p className="text-lg text-cream/80 sm:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
-            Learn from first hand experience in preparing, recording and auditioning for All State. Get the tips and tricks, and know exactly what to expect.
+            Connect with All State musicians from your community who want to pay it forward. Real students. Real experience. No pressure.
           </p>
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/mentors">
               <Button size="lg" variant="primary" className="w-full sm:w-auto text-base font-bold">
-                🎵 Find Your Instrument
+                🎵 Find a Mentor
               </Button>
             </Link>
             <Link href="/become-a-mentor">
               <Button size="lg" variant="outline" className="w-full sm:w-auto border-cream/40 text-cream hover:bg-cream hover:text-navy">
-                Become a Mentor
+                Give Back as a Mentor
               </Button>
             </Link>
           </div>
 
           {/* Trust line */}
           <p className="mt-5 text-cream/45 text-sm">
-            No account needed · Book in under 60 seconds · Sessions from $15
+            Peer to peer · No account needed · Sessions from $15
           </p>
 
           {/* Stats */}
           <div className="mt-12 grid grid-cols-3 gap-6 border-t border-cream/10 pt-10">
             {[
-              { value: '50+', label: 'All-State Mentors', emoji: '🏆' },
-              { value: '200+', label: 'Sessions Booked', emoji: '📅' },
+              { value: '50+', label: 'All State Musicians', emoji: '🏆' },
+              { value: '200+', label: 'Students Helped', emoji: '🎓' },
               { value: '4.9★', label: 'Average Rating', emoji: '⭐' },
             ].map(({ value, label, emoji }) => (
               <div key={label} className="text-center">

@@ -2,25 +2,25 @@ const steps = [
   {
     number: '1',
     icon: '🎯',
-    title: 'Pick your instrument',
+    title: 'Find your instrument',
     description:
-      "Click your instrument and browse real All-State students who play it. See their school, ratings, and what they're great at teaching.",
+      "Browse upperclassmen who play your instrument and made All State. See their school, what they've been through, and what other students say about them.",
     color: 'bg-navy',
   },
   {
     number: '2',
     icon: '📆',
-    title: 'Grab a time slot',
+    title: 'Pick a time',
     description:
-      'Pick a day and time that works for you — 30 or 60 minutes. Tell them what you want to work on and you\'re done.',
+      "Choose a time that works for both of you — 30 or 60 minutes. Tell them what you're working on and any questions you have.",
     color: 'bg-burgundy',
   },
   {
     number: '3',
-    icon: '🚀',
-    title: 'Level up your audition',
+    icon: '🎓',
+    title: 'Learn from someone who gets it',
     description:
-      'Get real feedback from someone who aced the same audition. They know the excerpts, the judges, and exactly what it takes.',
+      "They went through the exact same process. Ask them anything — excerpts, nerves, what audition day is actually like. This is what peer mentorship is all about.",
     color: 'bg-gold',
   },
 ]
@@ -31,13 +31,13 @@ export default function HowItWorks() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
           <div className="inline-block rounded-full bg-gold/15 px-4 py-1 text-gold text-sm font-semibold mb-4">
-            Super simple
+            Simple as it gets
           </div>
           <h2 className="text-3xl font-bold text-navy sm:text-4xl mb-3">
-            Go from nervous to ready — in 3 steps
+            Connect with an upperclassman in minutes
           </h2>
           <p className="text-navy/60 text-lg max-w-xl mx-auto">
-            No complicated sign-ups. No waiting around. Just find your mentor and book.
+            No formal lessons. No pressure. Just a fellow student who's been through it and wants to help.
           </p>
         </div>
 
@@ -68,7 +68,7 @@ export default function HowItWorks() {
         <div className="mt-14 rounded-2xl bg-white border border-gold/20 p-6 sm:p-8 text-center shadow-sm max-w-2xl mx-auto">
           <div className="text-3xl mb-3">💬</div>
           <p className="text-navy text-lg font-medium italic mb-3">
-            "I was so nervous about auditions. My mentor helped me nail the excerpts in just two sessions. I made All-State!"
+            "I had no idea what to expect at All State auditions. My mentor had done it twice — she told me exactly what the room feels like, what the judges listen for, everything. It felt like getting advice from an older sister."
           </p>
           <p className="text-navy/50 text-sm">— Emma, Flute · Grade 10</p>
           <div className="mt-4">
