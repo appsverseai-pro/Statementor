@@ -27,8 +27,8 @@ export default function Hero() {
 
           {/* Headline */}
           <h1 className="text-4xl font-bold text-cream sm:text-5xl lg:text-6xl leading-tight mb-6">
-            Get coached by students who{' '}
-            <span className="text-gold italic">actually made All-State</span>
+            Learn from musicians who made{' '}
+            <span className="text-gold">All State</span>
           </h1>
 
           {/* Subheadline - more casual and relatable */}
