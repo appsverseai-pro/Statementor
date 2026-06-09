@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+:root {
+  --background: #F8F4ED;
+  --foreground: #1B2A4A;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-navy: #1B2A4A;
+  --color-cream: #F8F4ED;
+  --color-gold: #C9973A;
+  --color-burgundy: #7C1D2D;
+  --color-navy-light: #2d4070;
+  --color-gold-light: #e0b05a;
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-playfair);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Inter, Arial, Helvetica, sans-serif;
+}
+
+.staff-lines {
+  position: relative;
+}
+.staff-lines::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 18px,
+    rgba(201, 151, 58, 0.12) 18px,
+    rgba(201, 151, 58, 0.12) 19px
+  );
+  pointer-events: none;
+}
