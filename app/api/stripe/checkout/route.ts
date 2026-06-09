@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ url: session.url })
   } catch (err) {
     if (err instanceof z.ZodError) {
-      return NextResponse.json({ error: String(err) }, { status: 400 })
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
     }
     console.error('POST /api/stripe/checkout error:', err)
     return NextResponse.json({ error: 'Failed to create checkout session' }, { status: 500 })

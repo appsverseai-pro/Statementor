@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, mentor }, { status: 201 })
   } catch (err) {
     if (err instanceof z.ZodError) {
-      return NextResponse.json({ error: String(err) }, { status: 400 })
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
     }
     console.error('Admin POST /api/admin/mentors error:', err)
     return NextResponse.json({ error: 'Failed to create mentor' }, { status: 500 })
@@ -113,7 +113,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ success: true, mentor })
   } catch (err) {
     if (err instanceof z.ZodError) {
-      return NextResponse.json({ error: String(err) }, { status: 400 })
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
     }
     console.error('Admin PUT /api/admin/mentors error:', err)
     return NextResponse.json({ error: 'Failed to update mentor' }, { status: 500 })

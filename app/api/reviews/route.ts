@@ -4,7 +4,7 @@ import { rateLimit, getClientIp } from '@/lib/rate-limit'
 
 const reviewSchema = z.object({
   mentorId: z.string().min(1),
-  bookingId: z.string().optional(),
+  bookingId: z.string().min(1),
   rating: z.number().int().min(1).max(5),
   reviewText: z.string().optional(),
   reviewerName: z.string().min(2),
@@ -30,31 +30,34 @@ export async function POST(request: NextRequest) {
     const { createServiceClient } = await import('@/lib/supabase/server')
     const supabase = await createServiceClient()
 
-    // Verify the booking exists and belongs to a completed/confirmed session before accepting the review
-    if (data.bookingId) {
-      const { data: booking, error: bookingError } = await supabase
-        .from('bookings')
-        .select('id, booking_status, payment_status')
-        .eq('id', data.bookingId)
-        .single()
+    // Verify the booking exists and belongs to a completed/confirmed paid session before accepting the review
+    const { data: booking, error: bookingError } = await supabase
+      .from('bookings')
+      .select('id, booking_status, payment_status, mentor_id')
+      .eq('id', data.bookingId)
+      .single()
 
-      if (bookingError || !booking) {
-        return NextResponse.json({ error: 'Booking not found' }, { status: 404 })
-      }
+    if (bookingError || !booking) {
+      return NextResponse.json({ error: 'Booking not found' }, { status: 404 })
+    }
 
-      if (booking.booking_status !== 'completed' && booking.booking_status !== 'confirmed') {
-        return NextResponse.json(
-          { error: 'Reviews can only be submitted for completed or confirmed bookings' },
-          { status: 403 }
-        )
-      }
+    if (booking.booking_status !== 'completed' && booking.booking_status !== 'confirmed') {
+      return NextResponse.json(
+        { error: 'Reviews can only be submitted for completed or confirmed bookings' },
+        { status: 403 }
+      )
+    }
 
-      if (booking.payment_status !== 'paid') {
-        return NextResponse.json(
-          { error: 'Reviews can only be submitted for paid bookings' },
-          { status: 403 }
-        )
-      }
+    if (booking.payment_status !== 'paid') {
+      return NextResponse.json(
+        { error: 'Reviews can only be submitted for paid bookings' },
+        { status: 403 }
+      )
+    }
+
+    // Ensure the mentorId in the review matches the booking
+    if (booking.mentor_id !== data.mentorId) {
+      return NextResponse.json({ error: 'Mentor does not match booking' }, { status: 403 })
     }
 
     const { data: review, error } = await supabase
@@ -78,7 +81,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ reviewId: review.id }, { status: 201 })
   } catch (err) {
     if (err instanceof z.ZodError) {
-      return NextResponse.json({ error: String(err) }, { status: 400 })
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
     }
     console.error('POST /api/reviews error:', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -89,7 +92,16 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const mentorId = searchParams.get('mentorId')
-    const status = searchParams.get('status') ?? 'approved'
+
+    // Determine if caller is an authenticated admin (needed to view non-approved reviews)
+    const { cookies } = await import('next/headers')
+    const cookieStore = await cookies()
+    const isAdmin = cookieStore.get('admin_session')?.value === 'authenticated'
+
+    // Public callers always see only approved reviews; admins may request other statuses
+    const requestedStatus = searchParams.get('status') ?? 'approved'
+    const allowedStatuses = ['pending', 'approved', 'hidden', 'deleted']
+    const status = isAdmin && allowedStatuses.includes(requestedStatus) ? requestedStatus : 'approved'
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     if (!supabaseUrl || supabaseUrl === 'your_supabase_url') {
@@ -102,7 +114,7 @@ export async function GET(request: NextRequest) {
     let query = supabase.from('reviews').select('*').order('created_at', { ascending: false })
 
     if (mentorId) query = query.eq('mentor_id', mentorId)
-    if (status !== 'all') query = query.eq('moderation_status', status)
+    query = query.eq('moderation_status', status)
 
     const { data, error } = await query
 

@@ -41,7 +41,7 @@ export async function PATCH(
     return NextResponse.json({ success: true })
   } catch (err) {
     if (err instanceof z.ZodError) {
-      return NextResponse.json({ error: String(err) }, { status: 400 })
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
     }
     console.error('PATCH /api/reviews/[id] error:', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

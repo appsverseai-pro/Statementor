@@ -16,7 +16,11 @@ export async function POST(request: NextRequest) {
     const { password } = loginSchema.parse(body)
 
     // Timing-safe password comparison to prevent timing attacks
-    const adminPassword = process.env.ADMIN_PASSWORD ?? 'admin123'
+    const adminPassword = process.env.ADMIN_PASSWORD
+    if (!adminPassword) {
+      console.error('ADMIN_PASSWORD environment variable is not set')
+      return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    }
     const passwordBuffer = Buffer.from(password)
     const adminBuffer = Buffer.from(adminPassword)
     const passwordsMatch =
