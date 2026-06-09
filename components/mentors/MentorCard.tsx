@@ -43,7 +43,7 @@ export default function MentorCard({ mentor, avgRating, reviewCount }: MentorCar
   return (
     <Link
       href={`/mentors/${mentor.id}`}
-      className="group block rounded-2xl border border-navy/10 bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+      className="group block rounded-2xl border-2 border-navy/10 bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-gold/30"
     >
       <div className="relative overflow-hidden rounded-t-2xl bg-navy/5 p-6 pb-4">
         {/* Musical staff decorative lines */}
@@ -94,8 +94,7 @@ export default function MentorCard({ mentor, avgRating, reviewCount }: MentorCar
 
         <div className="flex flex-wrap gap-1.5 mb-4">
           <Badge variant="gold">
-            <Music className="h-3 w-3 mr-1" />
-            {mentor.yearsInAllState}x All-State
+            🏆 {mentor.yearsInAllState}x All-State
           </Badge>
           {mentor.teachingAreas
             .split(',')

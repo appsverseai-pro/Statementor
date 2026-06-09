@@ -4,20 +4,14 @@ import Button from '@/components/ui/Button'
 export default function Hero() {
   return (
     <section className="relative overflow-hidden bg-navy staff-lines">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-1/4 left-10 text-cream text-9xl font-serif select-none rotate-12">
-          ♩
-        </div>
-        <div className="absolute top-1/3 right-20 text-cream text-8xl font-serif select-none -rotate-6">
-          ♪
-        </div>
-        <div className="absolute bottom-1/4 left-1/3 text-cream text-7xl font-serif select-none rotate-3">
-          ♫
-        </div>
-        <div className="absolute top-10 right-1/3 text-cream text-6xl font-serif select-none -rotate-12">
-          ♬
-        </div>
+      {/* Floating musical notes - more visible and playful */}
+      <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
+        <div className="absolute top-16 left-8 text-gold/25 text-7xl font-serif rotate-12">♩</div>
+        <div className="absolute top-24 right-16 text-gold/20 text-6xl font-serif -rotate-6">♪</div>
+        <div className="absolute bottom-24 left-1/4 text-gold/15 text-8xl font-serif rotate-3">♫</div>
+        <div className="absolute top-12 right-1/3 text-cream/10 text-5xl font-serif -rotate-12">♬</div>
+        <div className="absolute bottom-16 right-12 text-gold/20 text-6xl font-serif rotate-6">♩</div>
+        <div className="absolute top-1/2 left-4 text-cream/8 text-4xl font-serif -rotate-3">♪</div>
       </div>
 
       {/* Gold accent bar */}
@@ -25,29 +19,28 @@ export default function Hero() {
 
       <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
         <div className="mx-auto max-w-3xl text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center rounded-full bg-gold/20 px-4 py-1.5 text-gold text-sm font-semibold mb-6">
-            <span className="mr-2">🎵</span>
-            Peer-to-Peer Music Mentorship
+          {/* Badge - fun and friendly */}
+          <div className="inline-flex items-center rounded-full bg-gold/25 border border-gold/40 px-4 py-1.5 text-gold text-sm font-bold mb-6 tracking-wide">
+            <span className="mr-2">🎶</span>
+            Made by students, for students
           </div>
 
           {/* Headline */}
           <h1 className="text-4xl font-bold text-cream sm:text-5xl lg:text-6xl leading-tight mb-6">
-            Learn From Students Who{' '}
-            <span className="text-gold">Made All-State</span>
+            Get coached by students who{' '}
+            <span className="text-gold italic">actually made All-State</span>
           </h1>
 
-          {/* Subheadline */}
+          {/* Subheadline - more casual and relatable */}
           <p className="text-lg text-cream/80 sm:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
-            Get personalized audition coaching, feedback, and advice from
-            experienced musicians who recently achieved All-State recognition.
+            Skip the guesswork. Book a 1-on-1 session with a real All-State musician who knows your exact audition, your excerpts, and what it actually takes to get in.
           </p>
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/mentors">
-              <Button size="lg" variant="primary" className="w-full sm:w-auto">
-                Find Your Instrument
+              <Button size="lg" variant="primary" className="w-full sm:w-auto text-base font-bold">
+                🎵 Find Your Instrument
               </Button>
             </Link>
             <Link href="/become-a-mentor">
@@ -57,16 +50,22 @@ export default function Hero() {
             </Link>
           </div>
 
+          {/* Trust line */}
+          <p className="mt-5 text-cream/45 text-sm">
+            No account needed · Book in under 60 seconds · Sessions from $15
+          </p>
+
           {/* Stats */}
-          <div className="mt-14 grid grid-cols-3 gap-6 border-t border-cream/10 pt-10">
+          <div className="mt-12 grid grid-cols-3 gap-6 border-t border-cream/10 pt-10">
             {[
-              { value: '50+', label: 'All-State Mentors' },
-              { value: '200+', label: 'Sessions Booked' },
-              { value: '4.9★', label: 'Average Rating' },
-            ].map(({ value, label }) => (
+              { value: '50+', label: 'All-State Mentors', emoji: '🏆' },
+              { value: '200+', label: 'Sessions Booked', emoji: '📅' },
+              { value: '4.9★', label: 'Average Rating', emoji: '⭐' },
+            ].map(({ value, label, emoji }) => (
               <div key={label} className="text-center">
+                <div className="text-xl mb-1">{emoji}</div>
                 <div className="text-2xl sm:text-3xl font-bold text-gold">{value}</div>
-                <div className="text-sm text-cream/60 mt-1">{label}</div>
+                <div className="text-xs text-cream/55 mt-1">{label}</div>
               </div>
             ))}
           </div>

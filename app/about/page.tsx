@@ -17,7 +17,7 @@ export default function AboutPage() {
             About <span className="text-gold">StateMentor</span>
           </h1>
           <p className="text-cream/70 text-lg leading-relaxed">
-            We believe every music student deserves access to expert guidance from those who have recently walked the same path.
+            We think the best All-State advice comes from students who just got there — not textbooks, not theories. Real students. Real results.
           </p>
         </div>
       </section>
@@ -27,15 +27,15 @@ export default function AboutPage() {
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-navy mb-4">Our Mission</h2>
+              <h2 className="text-3xl font-bold text-navy mb-4">Why we built this</h2>
               <p className="text-navy/70 leading-relaxed mb-4">
-                StateMentor was founded on a simple idea: the best advice for aspiring All-State musicians comes from students who just achieved it themselves.
+                Audition prep is stressful — and most students don't know where to turn. Private teachers are expensive, YouTube only gets you so far, and your band director is helping 80 other kids.
               </p>
               <p className="text-navy/70 leading-relaxed mb-4">
-                Our mentors remember the audition anxiety, the specific excerpts, the exact techniques that judges look for — because they prepared for the same auditions recently.
+                StateMentor connects you with students who just did what you're trying to do. They know the exact excerpts. They remember the nerves. And they're ready to help.
               </p>
               <p className="text-navy/70 leading-relaxed">
-                We connect these talented All-State musicians with students who are working toward the same goal, creating a mentorship cycle that benefits everyone.
+                Sessions start at $15 and you can book one in under a minute — no account, no hassle.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -61,32 +61,36 @@ export default function AboutPage() {
       {/* How it works */}
       <section className="py-16 bg-navy/5">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-navy text-center mb-10">Why Peer Mentorship Works</h2>
+          <h2 className="text-3xl font-bold text-navy text-center mb-10">Why students love it 🎵</h2>
           <div className="space-y-6">
             {[
               {
-                title: 'Recent Experience',
-                body: "All-State mentors prepared for the exact same auditions you\'re facing, often just 1-2 years ago. They know what works and what judges notice.",
+                title: 'They literally just did it',
+                body: "Your mentor prepared for the exact same audition you're facing — often just 1-2 years ago. They know what works, what judges look for, and which excerpts trip people up.",
+                emoji: '🏆',
               },
               {
-                title: 'Relatable Guidance',
-                body: 'Peers understand the pressure of high school music and can offer advice that\'s practical, not just theoretical.',
+                title: 'They get it',
+                body: "They remember the nerves, the long practice sessions, the pressure. You're not getting advice from someone who forgot what high school is like.",
+                emoji: '🤝',
               },
               {
-                title: 'Affordable Access',
-                body: 'Professional music teachers can be expensive and hard to access. Our mentors offer high-quality guidance at student-friendly rates.',
+                title: 'Actually affordable',
+                body: "Private lessons can cost $80–$150/hour. Our mentors start at $15 for 30 minutes. Quality coaching shouldn't require a second mortgage.",
+                emoji: '💰',
               },
               {
-                title: 'Instrument-Specific',
-                body: 'Every mentor specializes in their instrument. You\'ll work with someone who knows the exact excerpts, technique challenges, and audition requirements for your instrument.',
+                title: 'Your instrument. Your excerpts.',
+                body: "Every mentor specializes in their own instrument. You'll work with someone who knows the specific excerpts, technique challenges, and audition requirements for what you play.",
+                emoji: '🎯',
               },
-            ].map(({ title, body }) => (
+            ].map(({ title, body, emoji }) => (
               <div
                 key={title}
                 className="flex gap-4 rounded-xl border border-navy/10 bg-white p-5 shadow-sm"
               >
-                <div className="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gold text-white text-lg">
-                  ♪
+                <div className="mt-1 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gold/15 text-xl">
+                  {emoji}
                 </div>
                 <div>
                   <h3 className="font-bold text-navy text-lg mb-1">{title}</h3>
@@ -102,9 +106,9 @@ export default function AboutPage() {
       <section className="py-16 bg-cream">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className="rounded-2xl bg-navy p-8 sm:p-10 text-center">
-            <h2 className="text-3xl font-bold text-cream mb-3">Are You an All-State Musician?</h2>
+            <h2 className="text-3xl font-bold text-cream mb-3">Are you an All-State musician? 🎷</h2>
             <p className="text-cream/70 mb-6 max-w-xl mx-auto">
-              Share your expertise, help fellow students succeed, and earn money doing what you love. Join StateMentor as a mentor today.
+              Help other students get where you are — and earn money doing it. Most mentors set their own schedule and make $15–$30 per session.
             </p>
             <Link href="/become-a-mentor">
               <Button variant="primary" size="lg">

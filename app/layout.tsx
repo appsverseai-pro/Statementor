@@ -47,7 +47,7 @@ export default function RootLayout({
               <div>
                 <div className="font-bold text-xl text-gold mb-2">StateMentor</div>
                 <p className="text-cream/60 text-sm leading-relaxed">
-                  Connecting aspiring musicians with All-State peers for expert mentorship and guidance.
+                  Real coaching from students who just made All-State. Find your mentor and start improving today. 🎵
                 </p>
               </div>
               <div>
