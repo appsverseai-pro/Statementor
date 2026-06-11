@@ -24,13 +24,19 @@ function sortMentors(mentors: Mentor[], sort: string): Mentor[] {
 }
 
 interface PageProps {
-  searchParams: Promise<{ sort?: string }>
+  searchParams: Promise<{ sort?: string; instrument?: string }>
 }
 
 export default async function MentorsPage({ searchParams }: PageProps) {
-  const { sort = 'rating' } = await searchParams
+  const { sort = 'rating', instrument = '' } = await searchParams
   const mentors = await getActiveMentors()
-  const sorted = sortMentors(mentors, sort)
+  const instruments = Array.from(new Set(mentors.map((m) => m.instrument))).sort((a, b) =>
+    a.localeCompare(b)
+  )
+  const filtered = instrument
+    ? mentors.filter((m) => m.instrument.toLowerCase() === instrument.toLowerCase())
+    : mentors
+  const sorted = sortMentors(filtered, sort)
 
   return (
     <main className="py-10">
@@ -43,7 +49,7 @@ export default async function MentorsPage({ searchParams }: PageProps) {
         </div>
 
         <Suspense fallback={null}>
-          <MentorFilters totalCount={sorted.length} />
+          <MentorFilters totalCount={sorted.length} instruments={instruments} />
         </Suspense>
 
         <MentorGrid mentors={sorted} />

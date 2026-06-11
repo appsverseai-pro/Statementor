@@ -44,7 +44,11 @@ export default function Hero() {
               </Button>
             </Link>
             <Link href="/become-a-mentor">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto border-cream/40 text-cream hover:bg-cream hover:text-navy">
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto bg-cream/10 border-cream text-cream hover:bg-cream hover:text-navy"
+              >
                 Give Back as a Mentor
               </Button>
             </Link>
@@ -80,7 +84,7 @@ export default function Hero() {
           fill="none"
           preserveAspectRatio="none"
         >
-          <path d="M0 48V0c240 32 480 48 720 48S1200 32 1440 0v48H0z" fill="#F8F4ED" />
+          <path d="M0 48V0c240 32 480 48 720 48S1200 32 1440 0v48H0z" fill="#EAF3FB" />
         </svg>
       </div>
     </section>

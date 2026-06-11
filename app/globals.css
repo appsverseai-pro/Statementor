@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F8F4ED;
+  --background: #EAF3FB;
   --foreground: #1B2A4A;
 }
 
@@ -9,7 +9,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-navy: #1B2A4A;
-  --color-cream: #F8F4ED;
+  --color-cream: #EAF3FB;
   --color-gold: #C9973A;
   --color-burgundy: #7C1D2D;
   --color-navy-light: #2d4070;

@@ -16,9 +16,10 @@ export default function AboutPage() {
           <h1 className="text-4xl font-bold text-cream mb-4 sm:text-5xl">
             About <span className="text-gold">StateMentor</span>
           </h1>
-          <p className="text-cream/70 text-lg leading-relaxed">
-            We think the best All-State advice comes from students who just got there — not textbooks, not theories. Real students. Real results.
-          </p>
+          <blockquote className="text-cream/80 text-lg leading-relaxed italic max-w-2xl mx-auto">
+            &ldquo;When I was preparing for the audition for All State, I wish I had a mentor that I can just ask anything, so I know exactly what to expect - the prep, competition, and the actual experience at All State&rdquo;
+            <footer className="mt-4 not-italic text-gold text-sm font-semibold">— Founder, StateMentor</footer>
+          </blockquote>
         </div>
       </section>
 

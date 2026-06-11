@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import Button from '@/components/ui/Button'
+import MentorApplicationForm from '@/components/mentors/MentorApplicationForm'
 import { DollarSign, Users, Clock, Award } from 'lucide-react'
 
 export const metadata: Metadata = {
@@ -21,7 +20,7 @@ export default function BecomeAMentorPage() {
             Help the next generation of musicians achieve their goals. Earn money doing what you love — teaching music.
           </p>
           <a
-            href="mailto:mentors@statementor.com?subject=I want to become a mentor"
+            href="#apply"
             className="inline-flex items-center gap-2 rounded-xl bg-gold px-8 py-4 text-white font-bold text-lg hover:bg-gold-light transition-colors"
           >
             Apply to Become a Mentor
@@ -98,19 +97,15 @@ export default function BecomeAMentorPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-16 bg-cream">
-        <div className="mx-auto max-w-lg px-4 text-center">
-          <h2 className="text-2xl font-bold text-navy mb-3">Ready to Get Started?</h2>
-          <p className="text-navy/60 mb-6">
-            Email us to apply. We review applications on a rolling basis and will get back to you within 48 hours.
+      {/* Application form */}
+      <section id="apply" className="py-16 bg-cream scroll-mt-8">
+        <div className="mx-auto max-w-2xl px-4 sm:px-6">
+          <h2 className="text-3xl font-bold text-navy text-center mb-3">Apply to Become a Mentor</h2>
+          <p className="text-navy/60 text-center mb-8">
+            Fill out the form below. We review applications on a rolling basis and will get back to you within 48 hours.
           </p>
-          <a href="mailto:mentors@statementor.com?subject=I want to become a mentor on StateMentor">
-            <Button size="lg" className="w-full sm:w-auto">
-              Apply Now — mentors@statementor.com
-            </Button>
-          </a>
-          <p className="mt-4 text-sm text-navy/40">No application fee. We only take a small platform fee per booking.</p>
+          <MentorApplicationForm />
+          <p className="mt-4 text-center text-sm text-navy/40">No application fee. We only take a small platform fee per booking.</p>
         </div>
       </section>
     </main>

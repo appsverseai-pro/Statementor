@@ -148,6 +148,11 @@ const MOCK_MENTORS: Mentor[] = [
   },
 ]
 
+// In-memory fallback store used when Google Sheets is not configured.
+// Mentors added via the admin UI are kept here for the lifetime of the
+// server process so the admin functions still work in development.
+const inMemoryMentors = new Map<string, Mentor>()
+
 function getAuth() {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL
   const key = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n')
@@ -191,8 +196,8 @@ export async function getMentors(): Promise<Mentor[]> {
   const auth = getAuth()
 
   if (!auth) {
-    // Return mock data in development
-    return MOCK_MENTORS
+    // Return mock data (plus any in-memory additions) in development
+    return mergeWithInMemory(MOCK_MENTORS)
   }
 
   try {
@@ -215,7 +220,7 @@ export async function getMentors(): Promise<Mentor[]> {
     return mentors
   } catch (err) {
     console.error('Google Sheets error, falling back to mock data:', err)
-    return MOCK_MENTORS
+    return mergeWithInMemory(MOCK_MENTORS)
   }
 }
 
@@ -250,11 +255,26 @@ export async function getUniqueInstruments(): Promise<{ instrument: string; coun
     .sort((a, b) => a.instrument.localeCompare(b.instrument))
 }
 
-export async function upsertMentor(mentor: Mentor): Promise<void> {
+function mergeWithInMemory(base: Mentor[]): Mentor[] {
+  if (inMemoryMentors.size === 0) return base
+  const result = base.map((m) => inMemoryMentors.get(m.id) ?? m)
+  for (const mentor of inMemoryMentors.values()) {
+    if (!base.some((m) => m.id === mentor.id)) result.push(mentor)
+  }
+  return result
+}
+
+export type UpsertResult = { persisted: boolean; note?: string }
+
+export async function upsertMentor(mentor: Mentor): Promise<UpsertResult> {
   const auth = getAuth()
   if (!auth) {
-    console.log('No Google auth, skipping sheet write')
-    return
+    inMemoryMentors.set(mentor.id, mentor)
+    console.log('Google Sheets not configured — mentor stored in memory:', mentor.id)
+    return {
+      persisted: false,
+      note: 'Google Sheets is not configured. Mentor saved in-memory only (will reset on server restart).',
+    }
   }
 
   const sheets = google.sheets({ version: 'v4', auth })
@@ -296,6 +316,7 @@ export async function upsertMentor(mentor: Mentor): Promise<void> {
       valueInputOption: 'RAW',
       requestBody: { values },
     })
+    return { persisted: true }
   } else {
     // Update existing row
     const sheetRow = rowIndex + 2 // +2 for header + 1-indexed
@@ -305,5 +326,6 @@ export async function upsertMentor(mentor: Mentor): Promise<void> {
       valueInputOption: 'RAW',
       requestBody: { values },
     })
+    return { persisted: true }
   }
 }

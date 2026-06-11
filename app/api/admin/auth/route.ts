@@ -4,8 +4,19 @@ import { z } from 'zod'
 import { timingSafeEqual } from 'crypto'
 
 const loginSchema = z.object({
+  email: z.string().min(1),
   password: z.string().min(1),
 })
+
+const DEFAULT_ADMIN_EMAIL = 'appsverseai@gmail.com'
+const DEFAULT_ADMIN_PASSWORD = 'Statementor!2026'
+
+// Timing-safe string comparison to prevent timing attacks
+function safeEqual(a: string, b: string): boolean {
+  const aBuf = Buffer.from(a)
+  const bBuf = Buffer.from(b)
+  return aBuf.length === bBuf.length && timingSafeEqual(aBuf, bBuf)
+}
 
 const ADMIN_TOKEN = 'admin_session'
 const SESSION_VALUE = 'authenticated'
@@ -13,28 +24,22 @@ const SESSION_VALUE = 'authenticated'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { password } = loginSchema.parse(body)
+    const { email, password } = loginSchema.parse(body)
 
-    // Timing-safe password comparison to prevent timing attacks
-    const adminPassword = process.env.ADMIN_PASSWORD
-    if (!adminPassword) {
-      console.error('ADMIN_PASSWORD environment variable is not set')
-      return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
-    }
-    const passwordBuffer = Buffer.from(password)
-    const adminBuffer = Buffer.from(adminPassword)
-    const passwordsMatch =
-      passwordBuffer.length === adminBuffer.length &&
-      timingSafeEqual(passwordBuffer, adminBuffer)
+    const adminPassword = process.env.ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD
+    const adminEmail = process.env.ADMIN_EMAIL || DEFAULT_ADMIN_EMAIL
 
-    if (!passwordsMatch) {
-      return NextResponse.json({ error: 'Invalid password' }, { status: 401 })
+    const emailMatches = safeEqual(email.trim().toLowerCase(), adminEmail.toLowerCase())
+    const passwordMatches = safeEqual(password, adminPassword)
+
+    if (!emailMatches || !passwordMatches) {
+      return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 })
     }
 
     const cookieStore = await cookies()
     cookieStore.set(ADMIN_TOKEN, SESSION_VALUE, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       maxAge: 60 * 60 * 24, // 24 hours
       path: '/',

@@ -65,9 +65,12 @@ export async function POST(request: NextRequest) {
       active: data.active,
     }
 
-    await upsertMentor(mentor)
+    const result = await upsertMentor(mentor)
 
-    return NextResponse.json({ success: true, mentor }, { status: 201 })
+    return NextResponse.json(
+      { success: true, mentor, persisted: result.persisted, note: result.note },
+      { status: 201 }
+    )
   } catch (err) {
     if (err instanceof z.ZodError) {
       return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
@@ -108,9 +111,9 @@ export async function PUT(request: NextRequest) {
       active: data.active,
     }
 
-    await upsertMentor(mentor)
+    const result = await upsertMentor(mentor)
 
-    return NextResponse.json({ success: true, mentor })
+    return NextResponse.json({ success: true, mentor, persisted: result.persisted, note: result.note })
   } catch (err) {
     if (err instanceof z.ZodError) {
       return NextResponse.json({ error: "Invalid request body" }, { status: 400 })

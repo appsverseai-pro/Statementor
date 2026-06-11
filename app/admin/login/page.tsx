@@ -2,12 +2,13 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Music2, Lock } from 'lucide-react'
+import { Music2, Lock, Mail } from 'lucide-react'
 import { Input } from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 
 export default function AdminLoginPage() {
   const router = useRouter()
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -21,11 +22,11 @@ export default function AdminLoginPage() {
       const res = await fetch('/api/admin/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ email, password }),
       })
 
       if (!res.ok) {
-        setError('Invalid password. Please try again.')
+        setError('Invalid email or password. Please try again.')
         return
       }
 
@@ -52,13 +53,25 @@ export default function AdminLoginPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="relative">
               <Input
+                label="Email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter admin email"
+                required
+                autoFocus
+              />
+              <Mail className="absolute right-3 top-9 h-4 w-4 text-navy/30 pointer-events-none" />
+            </div>
+
+            <div className="relative">
+              <Input
                 label="Password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter admin password"
                 required
-                autoFocus
               />
               <Lock className="absolute right-3 top-9 h-4 w-4 text-navy/30 pointer-events-none" />
             </div>
