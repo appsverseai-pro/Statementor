@@ -2,6 +2,14 @@ import { Resend } from 'resend'
 
 export const resend = new Resend(process.env.RESEND_API_KEY ?? 'placeholder')
 
+// Sender address. Defaults to Resend's shared test sender, which works
+// immediately without verifying a domain (it can deliver to the Resend
+// account owner's address). Once you verify your own domain in Resend,
+// set EMAIL_FROM (e.g. "StateMentor <noreply@yourdomain.com>") to send to
+// any recipient.
+export const EMAIL_FROM =
+  process.env.EMAIL_FROM ?? 'StateMentor <onboarding@resend.dev>'
+
 export async function sendBookingConfirmation({
   studentEmail,
   studentName,
@@ -23,7 +31,7 @@ export async function sendBookingConfirmation({
 
   try {
     await resend.emails.send({
-      from: 'StateMentor <noreply@statementor.com>',
+      from: EMAIL_FROM,
       to: studentEmail,
       subject: `Booking Confirmed: Session with ${mentorName}`,
       html: `
@@ -102,7 +110,7 @@ export async function sendMentorNotification({
 }) {
   try {
     await resend.emails.send({
-      from: 'StateMentor <noreply@statementor.com>',
+      from: EMAIL_FROM,
       to: mentorEmail,
       subject: `New Session Booking from ${studentName}`,
       html: `

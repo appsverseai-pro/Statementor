@@ -1,4 +1,5 @@
 import { google } from 'googleapis'
+import { getServiceClient } from '@/lib/supabase/admin'
 
 export type Mentor = {
   id: string
@@ -153,6 +154,86 @@ const MOCK_MENTORS: Mentor[] = [
 // server process so the admin functions still work in development.
 const inMemoryMentors = new Map<string, Mentor>()
 
+// ---------------------------------------------------------------------------
+// Supabase persistence layer (used when Google Sheets isn't configured).
+// Mentors are stored in a `mentors` table so admin add/edit changes survive
+// server restarts and serverless cold starts.
+// ---------------------------------------------------------------------------
+
+type MentorRow = {
+  id: string
+  name: string
+  instrument: string
+  school: string
+  bio: string
+  years_in_all_state: number
+  achievements: string
+  teaching_areas: string
+  session_price: number
+  profile_photo: string
+  available_days: string[] | null
+  available_times: string[] | null
+  email: string
+  active: boolean
+}
+
+function rowToMentor(row: MentorRow): Mentor {
+  return {
+    id: row.id,
+    name: row.name,
+    instrument: row.instrument,
+    school: row.school,
+    bio: row.bio,
+    yearsInAllState: row.years_in_all_state,
+    achievements: row.achievements ?? '',
+    teachingAreas: row.teaching_areas ?? '',
+    sessionPrice: Number(row.session_price),
+    profilePhoto: row.profile_photo ?? '',
+    availableDays: row.available_days ?? [],
+    availableTimes: row.available_times ?? [],
+    email: row.email,
+    active: row.active,
+  }
+}
+
+function mentorToRow(mentor: Mentor): MentorRow {
+  return {
+    id: mentor.id,
+    name: mentor.name,
+    instrument: mentor.instrument,
+    school: mentor.school,
+    bio: mentor.bio,
+    years_in_all_state: mentor.yearsInAllState,
+    achievements: mentor.achievements,
+    teaching_areas: mentor.teachingAreas,
+    session_price: mentor.sessionPrice,
+    profile_photo: mentor.profilePhoto,
+    available_days: mentor.availableDays,
+    available_times: mentor.availableTimes,
+    email: mentor.email,
+    active: mentor.active,
+  }
+}
+
+async function getMentorsFromSupabase(): Promise<Mentor[] | null> {
+  const supabase = getServiceClient()
+  if (!supabase) return null
+
+  const { data, error } = await supabase
+    .from('mentors')
+    .select('*')
+    .order('name', { ascending: true })
+
+  if (error) {
+    // Table likely doesn't exist yet — fall back to mock data so the site
+    // still renders until the schema is applied.
+    console.error('Supabase mentors fetch failed, falling back to mock:', error.message)
+    return null
+  }
+
+  return (data as MentorRow[]).map(rowToMentor)
+}
+
 function getAuth() {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL
   const key = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n')
@@ -196,7 +277,11 @@ export async function getMentors(): Promise<Mentor[]> {
   const auth = getAuth()
 
   if (!auth) {
-    // Return mock data (plus any in-memory additions) in development
+    // Prefer Supabase persistence when configured.
+    const fromSupabase = await getMentorsFromSupabase()
+    if (fromSupabase !== null) return fromSupabase
+
+    // Otherwise return mock data (plus any in-memory additions).
     return mergeWithInMemory(MOCK_MENTORS)
   }
 
@@ -269,11 +354,32 @@ export type UpsertResult = { persisted: boolean; note?: string }
 export async function upsertMentor(mentor: Mentor): Promise<UpsertResult> {
   const auth = getAuth()
   if (!auth) {
+    // Prefer Supabase persistence when configured.
+    const supabase = getServiceClient()
+    if (supabase) {
+      const { error } = await supabase
+        .from('mentors')
+        .upsert(mentorToRow(mentor), { onConflict: 'id' })
+
+      if (error) {
+        console.error('Supabase mentor upsert failed:', error.message)
+        // Keep an in-memory copy so the change is visible this session, and
+        // surface a clear note (usually means the table isn't created yet).
+        inMemoryMentors.set(mentor.id, mentor)
+        return {
+          persisted: false,
+          note: `Could not save to the database (${error.message}). Make sure the mentors table exists.`,
+        }
+      }
+
+      return { persisted: true }
+    }
+
     inMemoryMentors.set(mentor.id, mentor)
     console.log('Google Sheets not configured — mentor stored in memory:', mentor.id)
     return {
       persisted: false,
-      note: 'Google Sheets is not configured. Mentor saved in-memory only (will reset on server restart).',
+      note: 'Storage is not configured. Mentor saved in-memory only (will reset on server restart).',
     }
   }
 

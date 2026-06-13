@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { rateLimit, getClientIp } from '@/lib/rate-limit'
-import { resend } from '@/lib/resend'
+import { resend, EMAIL_FROM } from '@/lib/resend'
+import { getServiceClient } from '@/lib/supabase/admin'
 
 const applicationSchema = z.object({
   name: z.string().min(2).max(100),
@@ -36,6 +37,22 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const data = applicationSchema.parse(body)
 
+    // Best-effort: store the application in Supabase for record keeping.
+    const supabase = getServiceClient()
+    if (supabase) {
+      const { error: dbError } = await supabase.from('mentor_applications').insert({
+        name: data.name,
+        email: data.email,
+        instrument: data.instrument,
+        school: data.school,
+        years_in_all_state: data.yearsInAllState,
+        why: data.why,
+      })
+      if (dbError) {
+        console.error('Failed to store mentor application in Supabase:', dbError.message)
+      }
+    }
+
     const apiKey = process.env.RESEND_API_KEY
     if (!apiKey || apiKey === 'your_resend_api_key') {
       console.log('Mentor application received (RESEND_API_KEY not configured, logging only):', data)
@@ -46,7 +63,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { error: sendError } = await resend.emails.send({
-      from: 'StateMentor <noreply@statementor.com>',
+      from: EMAIL_FROM,
       to: APPLICATIONS_EMAIL,
       replyTo: data.email,
       subject: `New mentor application: ${data.name} (${data.instrument})`,
