@@ -5,7 +5,7 @@ const steps = [
     title: 'Find your instrument',
     description:
       "Browse upperclassmen who play your instrument and made All State. See their school, what they've been through, and what other students say about them.",
-    color: 'bg-navy',
+    color: 'bg-sky',
   },
   {
     number: '2',
@@ -13,7 +13,7 @@ const steps = [
     title: 'Pick a time',
     description:
       "Choose a time that works for both of you — 30 or 60 minutes. Tell them what you're working on and any questions you have.",
-    color: 'bg-burgundy',
+    color: 'bg-lavender',
   },
   {
     number: '3',
@@ -21,7 +21,7 @@ const steps = [
     title: 'Learn from someone who gets it',
     description:
       "They went through the exact same process. Ask them anything — excerpts, nerves, what audition day is actually like. This is what peer mentorship is all about.",
-    color: 'bg-gold',
+    color: 'bg-peach',
   },
 ]
 

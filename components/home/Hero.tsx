@@ -46,8 +46,8 @@ export default function Hero() {
             <Link href="/become-a-mentor">
               <Button
                 size="lg"
-                variant="outline"
-                className="w-full sm:w-auto bg-cream/10 border-cream text-cream hover:bg-cream hover:text-navy"
+                variant="outlineLight"
+                className="w-full sm:w-auto"
               >
                 Give Back as a Mentor
               </Button>
