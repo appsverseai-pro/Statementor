@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { z } from 'zod'
 import { timingSafeEqual } from 'crypto'
+import { rateLimit, getClientIp } from '@/lib/rate-limit'
 
 const loginSchema = z.object({
   email: z.string().min(1),
@@ -23,6 +24,12 @@ const SESSION_VALUE = 'authenticated'
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request)
+    const { allowed } = rateLimit(`admin-login:${ip}`, 5, 60_000)
+    if (!allowed) {
+      return NextResponse.json({ error: 'Too many login attempts. Please try again in a minute.' }, { status: 429 })
+    }
+
     const body = await request.json()
     const { email, password } = loginSchema.parse(body)
 

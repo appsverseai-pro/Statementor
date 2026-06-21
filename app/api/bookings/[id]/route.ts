@@ -12,7 +12,7 @@ const updateSchema = z.object({
 function isAuthorizedPatch(request: NextRequest, cookieStore: Awaited<ReturnType<typeof cookies>>): boolean {
   const internalSecret = process.env.INTERNAL_API_SECRET
   const headerSecret = request.headers.get('x-internal-secret')
-  if (internalSecret && headerSecret === internalSecret) return true
+  if (internalSecret && internalSecret.length > 0 && headerSecret === internalSecret) return true
   return cookieStore.get('admin_session')?.value === 'authenticated'
 }
 
