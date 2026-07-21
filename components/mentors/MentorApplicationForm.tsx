@@ -4,16 +4,29 @@ import { useState, FormEvent } from 'react'
 import Input, { Textarea } from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 
+const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
 export default function MentorApplicationForm() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [instrument, setInstrument] = useState('')
   const [school, setSchool] = useState('')
   const [yearsInAllState, setYearsInAllState] = useState('1')
+  const [hourlyRate, setHourlyRate] = useState('')
+  const [teachingAreas, setTeachingAreas] = useState('')
+  const [achievements, setAchievements] = useState('')
+  const [availableDays, setAvailableDays] = useState<string[]>([])
+  const [availableHours, setAvailableHours] = useState('')
   const [why, setWhy] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
+
+  const toggleDay = (day: string) => {
+    setAvailableDays((prev) =>
+      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
+    )
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -29,6 +42,11 @@ export default function MentorApplicationForm() {
           instrument,
           school,
           yearsInAllState: Number(yearsInAllState),
+          hourlyRate: Number(hourlyRate),
+          teachingAreas,
+          achievements,
+          availableDays,
+          availableHours,
           why,
         }),
       })
@@ -94,16 +112,72 @@ export default function MentorApplicationForm() {
           placeholder="Lincoln High School"
           required
         />
+        <Input
+          label="Years in All State"
+          type="number"
+          min={1}
+          max={10}
+          value={yearsInAllState}
+          onChange={(e) => setYearsInAllState(e.target.value)}
+          required
+        />
+        <Input
+          label="Hourly rate ($)"
+          type="number"
+          min={0}
+          step={5}
+          value={hourlyRate}
+          onChange={(e) => setHourlyRate(e.target.value)}
+          placeholder="45"
+          required
+        />
       </div>
+
       <Input
-        label="Years in All State"
-        type="number"
-        min={1}
-        max={10}
-        value={yearsInAllState}
-        onChange={(e) => setYearsInAllState(e.target.value)}
+        label="Teaching specializations & areas of focus"
+        value={teachingAreas}
+        onChange={(e) => setTeachingAreas(e.target.value)}
+        placeholder="Audition prep, tone production, sight-reading..."
         required
       />
+
+      <Textarea
+        label="Achievements"
+        value={achievements}
+        onChange={(e) => setAchievements(e.target.value)}
+        placeholder="All-State Orchestra 2022–2024, Regional Solo First Place..."
+        rows={3}
+        required
+      />
+
+      <div>
+        <label className="text-sm font-medium text-navy block mb-2">Available days</label>
+        <div className="flex flex-wrap gap-2">
+          {DAYS.map((day) => (
+            <button
+              key={day}
+              type="button"
+              onClick={() => toggleDay(day)}
+              className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
+                availableDays.includes(day)
+                  ? 'bg-gold text-white'
+                  : 'bg-navy/10 text-navy hover:bg-navy/20'
+              }`}
+            >
+              {day.slice(0, 3)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <Input
+        label="Available hours"
+        value={availableHours}
+        onChange={(e) => setAvailableHours(e.target.value)}
+        placeholder="Weekday afternoons 3–6 PM, weekend mornings..."
+        required
+      />
+
       <Textarea
         label="Why do you want to mentor?"
         value={why}

@@ -37,6 +37,7 @@ export default function AdminMentorsPage() {
   const [formData, setFormData] = useState<Partial<Mentor>>(emptyMentor)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [photoUploading, setPhotoUploading] = useState(false)
 
   const fetchMentors = useCallback(async () => {
     const res = await fetch('/api/admin/mentors')
@@ -88,6 +89,56 @@ export default function AdminMentorsPage() {
       ...prev,
       availableTimes: times.includes(time) ? times.filter((t) => t !== time) : [...times, time],
     }))
+  }
+
+  // Read an uploaded image, downscale it (keeping any aspect ratio) and store
+  // it as a base64 data URL in profilePhoto. Keeping the longest side at 800px
+  // keeps the payload small enough to save straight into the mentors table.
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      setError('Please choose an image file.')
+      return
+    }
+    setPhotoUploading(true)
+    setError(null)
+    try {
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(reader.result as string)
+        reader.onerror = () => reject(new Error('Could not read file'))
+        reader.readAsDataURL(file)
+      })
+
+      const resized = await new Promise<string>((resolve, reject) => {
+        const img = new Image()
+        img.onload = () => {
+          const maxSide = 800
+          let { width, height } = img
+          if (width > maxSide || height > maxSide) {
+            const scale = maxSide / Math.max(width, height)
+            width = Math.round(width * scale)
+            height = Math.round(height * scale)
+          }
+          const canvas = document.createElement('canvas')
+          canvas.width = width
+          canvas.height = height
+          const ctx = canvas.getContext('2d')
+          if (!ctx) return reject(new Error('Canvas not supported'))
+          ctx.drawImage(img, 0, 0, width, height)
+          resolve(canvas.toDataURL('image/jpeg', 0.85))
+        }
+        img.onerror = () => reject(new Error('Could not load image'))
+        img.src = dataUrl
+      })
+
+      setFormData((p) => ({ ...p, profilePhoto: resized }))
+    } catch {
+      setError('Could not process that image. Try a different file.')
+    } finally {
+      setPhotoUploading(false)
+    }
   }
 
   const handleSave = async () => {
@@ -180,6 +231,47 @@ export default function AdminMentorsPage() {
                 value={formData.sessionPrice ?? 60}
                 onChange={(e) => setFormData((p) => ({ ...p, sessionPrice: parseFloat(e.target.value) }))}
               />
+              {/* Profile photo upload */}
+              <div className="sm:col-span-2">
+                <label className="text-sm font-medium text-navy block mb-2">Profile Photo</label>
+                <div className="flex items-center gap-4">
+                  {formData.profilePhoto ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={formData.profilePhoto}
+                      alt="Mentor preview"
+                      className="h-20 w-20 rounded-full object-cover ring-2 ring-gold/30"
+                    />
+                  ) : (
+                    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-navy/10 text-navy/40 text-xs text-center">
+                      No photo
+                    </div>
+                  )}
+                  <div className="flex flex-col gap-2">
+                    <label className="cursor-pointer inline-flex items-center gap-2 rounded-lg bg-navy/10 px-4 py-2 text-sm font-medium text-navy hover:bg-navy/20 transition-colors w-fit">
+                      {photoUploading ? 'Processing...' : 'Upload Photo'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handlePhotoUpload}
+                        disabled={photoUploading}
+                        className="hidden"
+                      />
+                    </label>
+                    {formData.profilePhoto && (
+                      <button
+                        type="button"
+                        onClick={() => setFormData((p) => ({ ...p, profilePhoto: '' }))}
+                        className="text-xs text-burgundy hover:underline w-fit"
+                      >
+                        Remove photo
+                      </button>
+                    )}
+                    <p className="text-xs text-navy/50">Any shape or size works — we resize it for you.</p>
+                  </div>
+                </div>
+              </div>
+
               <div className="sm:col-span-2">
                 <Textarea
                   label="Bio"

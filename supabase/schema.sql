@@ -88,12 +88,24 @@ create table if not exists mentor_applications (
   instrument text not null,
   school text not null,
   years_in_all_state integer not null,
+  hourly_rate numeric,
+  teaching_areas text,
+  achievements text,
+  available_days text[] default '{}',
+  available_hours text,
   why text not null,
   created_at timestamptz default now()
 );
 
 alter table mentor_applications enable row level security;
 -- No public policies: server-side inserts only.
+
+-- If the table already existed from an earlier run, add the newer columns.
+alter table mentor_applications add column if not exists hourly_rate numeric;
+alter table mentor_applications add column if not exists teaching_areas text;
+alter table mentor_applications add column if not exists achievements text;
+alter table mentor_applications add column if not exists available_days text[] default '{}';
+alter table mentor_applications add column if not exists available_hours text;
 
 -- ---------------------------------------------------------------------------
 -- Seed the directory with the starter mentors so the site isn't empty.
