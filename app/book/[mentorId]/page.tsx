@@ -90,8 +90,8 @@ export default async function BookingPage({ params }: PageProps) {
 
               <div className="border-t border-navy/10 pt-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-navy/60">Cost</span>
-                  <span className="font-bold text-navy">Free · 30 or 60 min</span>
+                  <span className="text-navy/60">Session</span>
+                  <span className="font-bold text-navy">30 or 60 min</span>
                 </div>
               </div>
             </div>

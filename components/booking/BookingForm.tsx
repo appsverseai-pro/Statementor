@@ -131,7 +131,6 @@ export default function BookingForm({ mentor }: BookingFormProps) {
                   className="sr-only"
                 />
                 <span className="text-xl font-bold text-navy">{len} min</span>
-                <span className="text-gold font-semibold">Free</span>
               </label>
             )
           })}
@@ -185,8 +184,8 @@ export default function BookingForm({ mentor }: BookingFormProps) {
       {/* Summary */}
       <div className="rounded-xl border border-gold/30 bg-gold/5 p-4">
         <div className="flex justify-between text-sm">
-          <span className="text-navy/70">Session with {mentor.name}</span>
-          <span className="font-bold text-navy">Free</span>
+          <span className="text-navy/70">Session with</span>
+          <span className="font-bold text-navy">{mentor.name}</span>
         </div>
         {selectedDate && (
           <div className="flex justify-between text-sm mt-1.5">
@@ -209,7 +208,7 @@ export default function BookingForm({ mentor }: BookingFormProps) {
         loading={isSubmitting}
         disabled={!selectedDate}
       >
-        Confirm Booking — Free
+        Confirm Booking
       </Button>
       <p className="text-center text-xs text-navy/50">
         We&apos;ll email your session invite to the address above.

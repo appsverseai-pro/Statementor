@@ -173,8 +173,8 @@ export default async function MentorProfilePage({ params }: PageProps) {
           <div className="lg:col-span-1">
             <div className="sticky top-24 rounded-2xl border border-navy/10 bg-white p-6 shadow-md">
               <div className="text-center mb-5">
-                <div className="text-3xl font-bold text-navy">Free</div>
-                <div className="text-sm text-navy/50">peer mentorship</div>
+                <div className="text-2xl font-bold text-navy">Book a Session</div>
+                <div className="text-sm text-navy/50">1-on-1 peer mentorship</div>
               </div>
 
               <div className="space-y-3 mb-5">
@@ -195,7 +195,7 @@ export default async function MentorProfilePage({ params }: PageProps) {
               </Link>
 
               <p className="mt-3 text-xs text-center text-navy/40">
-                Free session — invite sent to your email
+                We&apos;ll email your invite after booking
               </p>
             </div>
           </div>

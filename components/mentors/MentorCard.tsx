@@ -121,7 +121,7 @@ export default function MentorCard({ mentor, avgRating, reviewCount }: MentorCar
           </div>
           <div className="flex items-center gap-1 text-gold font-bold">
             <Clock className="h-3.5 w-3.5" />
-            <span className="text-sm">Free</span>
+            <span className="text-sm">30 or 60 min</span>
           </div>
         </div>
       </div>

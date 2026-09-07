@@ -273,7 +273,27 @@ function parseRow(row: string[]): Mentor | null {
   }
 }
 
+// Simple in-memory TTL cache for the mentor list. On a warm serverless
+// instance this avoids hitting Supabase/Sheets on every page load, which is the
+// main source of the "couple of seconds" delay. Writes call clearMentorsCache()
+// so admin edits show up immediately.
+let mentorsCache: { data: Mentor[]; expires: number } | null = null
+const MENTORS_TTL_MS = 60_000
+
+export function clearMentorsCache(): void {
+  mentorsCache = null
+}
+
 export async function getMentors(): Promise<Mentor[]> {
+  if (mentorsCache && mentorsCache.expires > Date.now()) {
+    return mentorsCache.data
+  }
+  const data = await loadMentors()
+  mentorsCache = { data, expires: Date.now() + MENTORS_TTL_MS }
+  return data
+}
+
+async function loadMentors(): Promise<Mentor[]> {
   const auth = getAuth()
 
   if (!auth) {
@@ -352,6 +372,8 @@ function mergeWithInMemory(base: Mentor[]): Mentor[] {
 export type UpsertResult = { persisted: boolean; note?: string }
 
 export async function upsertMentor(mentor: Mentor): Promise<UpsertResult> {
+  // Any write invalidates the cached list so the change is visible immediately.
+  clearMentorsCache()
   const auth = getAuth()
   if (!auth) {
     // Prefer Supabase persistence when configured.
