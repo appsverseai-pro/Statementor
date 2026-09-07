@@ -36,7 +36,7 @@ export default function AboutPage() {
                 StateMentor connects you with students who just did what you're trying to do. They know the exact excerpts. They remember the nerves. And they're ready to help.
               </p>
               <p className="text-navy/70 leading-relaxed">
-                Sessions start at $15 and you can book one in under a minute — no account, no hassle.
+                Every session is completely free, and you can book one in under a minute — no account, no hassle.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -76,9 +76,9 @@ export default function AboutPage() {
                 emoji: '🤝',
               },
               {
-                title: 'Actually affordable',
-                body: "Private lessons can cost $80–$150/hour. Our mentors start at $15 for 30 minutes. Quality coaching shouldn't require a second mortgage.",
-                emoji: '💰',
+                title: 'Completely free',
+                body: "Private lessons can cost $80–$150/hour. StateMentor is 100% free — it's students helping students, no cost, no catch.",
+                emoji: '💛',
               },
               {
                 title: 'Your instrument. Your excerpts.',
@@ -109,7 +109,7 @@ export default function AboutPage() {
           <div className="rounded-2xl bg-navy p-8 sm:p-10 text-center">
             <h2 className="text-3xl font-bold text-cream mb-3">Are you an All-State musician? 🎷</h2>
             <p className="text-cream/70 mb-6 max-w-xl mx-auto">
-              Help other students get where you are — and earn money doing it. Most mentors set their own schedule and make $15–$30 per session.
+              Help other students get where you are. Give back to your community, set your own schedule, and build experience that looks great on college applications.
             </p>
             <Link href="/become-a-mentor">
               <Button variant="primary" size="lg">

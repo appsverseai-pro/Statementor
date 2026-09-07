@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import MentorApplicationForm from '@/components/mentors/MentorApplicationForm'
-import { DollarSign, Users, Clock, Award } from 'lucide-react'
+import { Heart, Users, Clock, Award } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Become a Mentor',
-  description: 'Are you an All-State musician? Join StateMentor and help students achieve their musical goals while earning money.',
+  description: 'Are you an All-State musician? Join StateMentor and give back to your community by helping the next generation of musicians.',
 }
 
 export default function BecomeAMentorPage() {
@@ -17,7 +17,7 @@ export default function BecomeAMentorPage() {
             Share Your <span className="text-gold">All-State</span> Experience
           </h1>
           <p className="text-cream/70 text-lg mb-8 max-w-xl mx-auto">
-            Help the next generation of musicians achieve their goals. Earn money doing what you love — teaching music.
+            Help the next generation of musicians achieve their goals. Give back to your community and share what you love — music.
           </p>
           <a
             href="#apply"
@@ -35,9 +35,9 @@ export default function BecomeAMentorPage() {
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             {[
               {
-                icon: DollarSign,
-                title: 'Earn on Your Schedule',
-                desc: 'Set your own rates ($40–$80/hr typical) and availability. Get paid securely through Stripe.',
+                icon: Heart,
+                title: 'Give Back on Your Schedule',
+                desc: 'Set your own availability and mentor when it works for you. Sessions are free for students — your time is the gift.',
               },
               {
                 icon: Users,
@@ -105,7 +105,7 @@ export default function BecomeAMentorPage() {
             Fill out the form below. We review applications on a rolling basis and will get back to you within 48 hours.
           </p>
           <MentorApplicationForm />
-          <p className="mt-4 text-center text-sm text-navy/40">No application fee. We only take a small platform fee per booking.</p>
+          <p className="mt-4 text-center text-sm text-navy/40">Free to join. StateMentor is a free, student-run community.</p>
         </div>
       </section>
     </main>

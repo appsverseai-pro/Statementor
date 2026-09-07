@@ -10,7 +10,6 @@ const applicationSchema = z.object({
   instrument: z.string().min(2).max(60),
   school: z.string().min(2).max(120),
   yearsInAllState: z.coerce.number().int().min(1).max(10),
-  hourlyRate: z.coerce.number().min(0).max(1000),
   teachingAreas: z.string().min(2).max(500),
   achievements: z.string().min(2).max(2000),
   availableDays: z.array(z.string().max(20)).max(7).default([]),
@@ -51,7 +50,6 @@ export async function POST(request: NextRequest) {
         instrument: data.instrument,
         school: data.school,
         years_in_all_state: data.yearsInAllState,
-        hourly_rate: data.hourlyRate,
         teaching_areas: data.teachingAreas,
         achievements: data.achievements,
         available_days: data.availableDays,
@@ -85,7 +83,6 @@ export async function POST(request: NextRequest) {
           <tr><td style="padding:4px 12px 4px 0;"><b>Instrument</b></td><td>${escapeHtml(data.instrument)}</td></tr>
           <tr><td style="padding:4px 12px 4px 0;"><b>School</b></td><td>${escapeHtml(data.school)}</td></tr>
           <tr><td style="padding:4px 12px 4px 0;"><b>Years in All State</b></td><td>${data.yearsInAllState}</td></tr>
-          <tr><td style="padding:4px 12px 4px 0;"><b>Hourly Rate</b></td><td>$${data.hourlyRate}</td></tr>
           <tr><td style="padding:4px 12px 4px 0;"><b>Specializations</b></td><td>${escapeHtml(data.teachingAreas)}</td></tr>
           <tr><td style="padding:4px 12px 4px 0;vertical-align:top;"><b>Available Days</b></td><td>${escapeHtml(data.availableDays.join(', ') || '—')}</td></tr>
           <tr><td style="padding:4px 12px 4px 0;"><b>Available Hours</b></td><td>${escapeHtml(data.availableHours)}</td></tr>

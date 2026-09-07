@@ -11,8 +11,6 @@ interface MentorFiltersProps {
 
 const SORT_OPTIONS = [
   { value: 'rating', label: 'Highest Rated' },
-  { value: 'price-asc', label: 'Price: Low to High' },
-  { value: 'price-desc', label: 'Price: High to Low' },
   { value: 'experience', label: 'Most Experience' },
 ]
 

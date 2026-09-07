@@ -223,14 +223,6 @@ export default function AdminMentorsPage() {
                 value={formData.yearsInAllState ?? 1}
                 onChange={(e) => setFormData((p) => ({ ...p, yearsInAllState: parseInt(e.target.value) }))}
               />
-              <Input
-                label="Session Price ($/hr)"
-                type="number"
-                min={0}
-                step={5}
-                value={formData.sessionPrice ?? 60}
-                onChange={(e) => setFormData((p) => ({ ...p, sessionPrice: parseFloat(e.target.value) }))}
-              />
               {/* Profile photo upload */}
               <div className="sm:col-span-2">
                 <label className="text-sm font-medium text-navy block mb-2">Profile Photo</label>
@@ -380,7 +372,6 @@ export default function AdminMentorsPage() {
                   <th className="text-left px-4 py-3 font-semibold text-navy/70">Name</th>
                   <th className="text-left px-4 py-3 font-semibold text-navy/70">Instrument</th>
                   <th className="text-left px-4 py-3 font-semibold text-navy/70">School</th>
-                  <th className="text-left px-4 py-3 font-semibold text-navy/70">Price</th>
                   <th className="text-left px-4 py-3 font-semibold text-navy/70">Status</th>
                   <th className="text-right px-4 py-3 font-semibold text-navy/70">Actions</th>
                 </tr>
@@ -391,7 +382,6 @@ export default function AdminMentorsPage() {
                     <td className="px-4 py-3 font-medium text-navy">{mentor.name}</td>
                     <td className="px-4 py-3 text-navy/70">{mentor.instrument}</td>
                     <td className="px-4 py-3 text-navy/70">{mentor.school}</td>
-                    <td className="px-4 py-3 text-navy/70">${mentor.sessionPrice}/hr</td>
                     <td className="px-4 py-3">
                       <Badge variant={mentor.active ? 'green' : 'gray'}>
                         {mentor.active ? 'Active' : 'Inactive'}

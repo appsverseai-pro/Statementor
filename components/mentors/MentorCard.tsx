@@ -1,7 +1,6 @@
 import Link from 'next/link'
-import { MapPin, Music, Star, Clock } from 'lucide-react'
+import { MapPin, Star, Clock } from 'lucide-react'
 import { Mentor } from '@/lib/google-sheets'
-import { formatCurrency } from '@/lib/utils'
 import Badge from '@/components/ui/Badge'
 
 interface MentorCardProps {
@@ -122,7 +121,7 @@ export default function MentorCard({ mentor, avgRating, reviewCount }: MentorCar
           </div>
           <div className="flex items-center gap-1 text-gold font-bold">
             <Clock className="h-3.5 w-3.5" />
-            <span className="text-sm">{formatCurrency(mentor.sessionPrice)}/hr</span>
+            <span className="text-sm">Free</span>
           </div>
         </div>
       </div>

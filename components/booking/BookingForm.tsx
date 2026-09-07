@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 import { Mentor } from '@/lib/google-sheets'
-import { formatCurrency, formatDate } from '@/lib/utils'
+import { formatDate } from '@/lib/utils'
 import TimeSlotPicker from './TimeSlotPicker'
 import { Input, Textarea } from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
@@ -44,9 +44,6 @@ export default function BookingForm({ mentor }: BookingFormProps) {
     },
   })
 
-  const sessionLength = parseInt(watch('sessionLength') ?? '60', 10)
-  const price = sessionLength === 30 ? mentor.sessionPrice / 2 : mentor.sessionPrice
-
   const onSubmit = async (data: BookingFormData) => {
     if (!selectedDate) {
       setError('Please select a date and time for your session.')
@@ -78,27 +75,9 @@ export default function BookingForm({ mentor }: BookingFormProps) {
 
       const { bookingId } = await res.json()
 
-      // Proceed to checkout
-      const checkoutRes = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          bookingId,
-          mentorName: mentor.name,
-          instrument: mentor.instrument,
-          sessionLength: parseInt(data.sessionLength, 10),
-          price,
-          studentEmail: data.studentEmail,
-        }),
-      })
-
-      if (!checkoutRes.ok) {
-        const body = await checkoutRes.json()
-        throw new Error(body.error ?? 'Failed to create checkout session')
-      }
-
-      const { url } = await checkoutRes.json()
-      router.push(url)
+      // Free sessions — the invite email is sent server-side, go straight to
+      // the confirmation page.
+      router.push(`/confirmation?bookingId=${bookingId}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
     } finally {
@@ -135,7 +114,6 @@ export default function BookingForm({ mentor }: BookingFormProps) {
         </h3>
         <div className="grid grid-cols-2 gap-3">
           {(['30', '60'] as const).map((len) => {
-            const p = len === '30' ? mentor.sessionPrice / 2 : mentor.sessionPrice
             const isSelected = watch('sessionLength') === len
             return (
               <label
@@ -153,7 +131,7 @@ export default function BookingForm({ mentor }: BookingFormProps) {
                   className="sr-only"
                 />
                 <span className="text-xl font-bold text-navy">{len} min</span>
-                <span className="text-gold font-semibold">{formatCurrency(p)}</span>
+                <span className="text-gold font-semibold">Free</span>
               </label>
             )
           })}
@@ -208,7 +186,7 @@ export default function BookingForm({ mentor }: BookingFormProps) {
       <div className="rounded-xl border border-gold/30 bg-gold/5 p-4">
         <div className="flex justify-between text-sm">
           <span className="text-navy/70">Session with {mentor.name}</span>
-          <span className="font-bold text-navy">{formatCurrency(price)}</span>
+          <span className="font-bold text-navy">Free</span>
         </div>
         {selectedDate && (
           <div className="flex justify-between text-sm mt-1.5">
@@ -231,8 +209,11 @@ export default function BookingForm({ mentor }: BookingFormProps) {
         loading={isSubmitting}
         disabled={!selectedDate}
       >
-        Continue to Payment — {formatCurrency(price)}
+        Confirm Booking — Free
       </Button>
+      <p className="text-center text-xs text-navy/50">
+        We&apos;ll email your session invite to the address above.
+      </p>
     </form>
   )
 }

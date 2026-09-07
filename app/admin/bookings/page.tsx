@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import AdminLayout from '@/components/admin/AdminLayout'
 import Badge from '@/components/ui/Badge'
-import { formatDate, formatCurrency } from '@/lib/utils'
+import { formatDate } from '@/lib/utils'
 import { ChevronDown } from 'lucide-react'
 
 type Booking = {
@@ -100,14 +100,10 @@ export default function AdminBookingsPage() {
                       <Badge variant={STATUS_COLORS[booking.booking_status]}>
                         {booking.booking_status}
                       </Badge>
-                      <Badge variant={STATUS_COLORS[booking.payment_status]}>
-                        {booking.payment_status}
-                      </Badge>
                     </div>
                     <p className="text-sm text-navy/60">{booking.student_email}</p>
                     <p className="text-sm text-navy/60 mt-1">
-                      {formatDate(booking.session_date)} • {booking.session_length} min •{' '}
-                      {formatCurrency(booking.session_length === 60 ? 60 : 30)}
+                      {formatDate(booking.session_date)} • {booking.session_length} min
                     </p>
                     {booking.session_goals && (
                       <p className="text-xs text-navy/50 mt-1 italic">
@@ -132,23 +128,6 @@ export default function AdminBookingsPage() {
                           <option value="confirmed">Confirmed</option>
                           <option value="completed">Completed</option>
                           <option value="cancelled">Cancelled</option>
-                        </select>
-                        <ChevronDown className="absolute right-2 top-2 h-3 w-3 text-navy/40 pointer-events-none" />
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <label className="text-xs text-navy/60 whitespace-nowrap">Payment:</label>
-                      <div className="relative">
-                        <select
-                          value={booking.payment_status}
-                          onChange={(e) =>
-                            updateStatus(booking.id, 'payment_status', e.target.value)
-                          }
-                          disabled={updating === booking.id}
-                          className="appearance-none rounded-lg border border-navy/20 bg-white pl-3 pr-7 py-1.5 text-xs text-navy focus:border-gold focus:outline-none"
-                        >
-                          <option value="unpaid">Unpaid</option>
-                          <option value="paid">Paid</option>
                         </select>
                         <ChevronDown className="absolute right-2 top-2 h-3 w-3 text-navy/40 pointer-events-none" />
                       </div>

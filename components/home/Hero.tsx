@@ -56,7 +56,7 @@ export default function Hero() {
 
           {/* Trust line */}
           <p className="mt-5 text-cream/45 text-sm">
-            Peer to peer · No account needed · Sessions from $15
+            Peer to peer · No account needed · Always free
           </p>
 
           {/* Stats */}
@@ -84,7 +84,7 @@ export default function Hero() {
           fill="none"
           preserveAspectRatio="none"
         >
-          <path d="M0 48V0c240 32 480 48 720 48S1200 32 1440 0v48H0z" fill="#EAF3FB" />
+          <path d="M0 48V0c240 32 480 48 720 48S1200 32 1440 0v48H0z" fill="#DEDEF0" />
         </svg>
       </div>
     </section>

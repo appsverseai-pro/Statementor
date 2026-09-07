@@ -12,7 +12,6 @@ export default function MentorApplicationForm() {
   const [instrument, setInstrument] = useState('')
   const [school, setSchool] = useState('')
   const [yearsInAllState, setYearsInAllState] = useState('1')
-  const [hourlyRate, setHourlyRate] = useState('')
   const [teachingAreas, setTeachingAreas] = useState('')
   const [achievements, setAchievements] = useState('')
   const [availableDays, setAvailableDays] = useState<string[]>([])
@@ -42,7 +41,6 @@ export default function MentorApplicationForm() {
           instrument,
           school,
           yearsInAllState: Number(yearsInAllState),
-          hourlyRate: Number(hourlyRate),
           teachingAreas,
           achievements,
           availableDays,
@@ -119,16 +117,6 @@ export default function MentorApplicationForm() {
           max={10}
           value={yearsInAllState}
           onChange={(e) => setYearsInAllState(e.target.value)}
-          required
-        />
-        <Input
-          label="Hourly rate ($)"
-          type="number"
-          min={0}
-          step={5}
-          value={hourlyRate}
-          onChange={(e) => setHourlyRate(e.target.value)}
-          placeholder="45"
           required
         />
       </div>

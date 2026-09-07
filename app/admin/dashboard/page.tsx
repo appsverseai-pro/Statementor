@@ -2,13 +2,13 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import AdminLayout from '@/components/admin/AdminLayout'
 import StatsCard from '@/components/admin/StatsCard'
-import { Users, CalendarCheck, Star, DollarSign } from 'lucide-react'
+import { Users, CalendarCheck, Star } from 'lucide-react'
 import { getActiveMentors } from '@/lib/google-sheets'
 
 async function getStats() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   if (!supabaseUrl || supabaseUrl === 'your_supabase_url') {
-    return { bookings: 0, reviews: 0, revenue: 0 }
+    return { bookings: 0, reviews: 0 }
   }
 
   try {
@@ -16,22 +16,16 @@ async function getStats() {
     const supabase = await createServiceClient()
 
     const [bookingsResult, reviewsResult] = await Promise.all([
-      supabase.from('bookings').select('payment_status, session_length', { count: 'exact' }),
+      supabase.from('bookings').select('id', { count: 'exact' }),
       supabase.from('reviews').select('id', { count: 'exact' }).eq('moderation_status', 'pending'),
     ])
-
-    const paidBookings = bookingsResult.data?.filter((b) => b.payment_status === 'paid') ?? []
-    const revenue = paidBookings.reduce((sum, b) => {
-      return sum + (b.session_length === 60 ? 60 : 30)
-    }, 0)
 
     return {
       bookings: bookingsResult.count ?? 0,
       reviews: reviewsResult.count ?? 0,
-      revenue,
     }
   } catch {
-    return { bookings: 0, reviews: 0, revenue: 0 }
+    return { bookings: 0, reviews: 0 }
   }
 }
 
@@ -50,7 +44,7 @@ export default async function AdminDashboardPage() {
           <p className="text-navy/60 mt-1">Welcome back to StateMentor admin</p>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
           <StatsCard
             title="Active Mentors"
             value={mentors.length}
@@ -71,13 +65,6 @@ export default async function AdminDashboardPage() {
             description="Awaiting moderation"
             icon={Star}
             variant="burgundy"
-          />
-          <StatsCard
-            title="Revenue"
-            value={`$${stats.revenue}`}
-            description="From paid sessions"
-            icon={DollarSign}
-            variant="default"
           />
         </div>
 

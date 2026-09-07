@@ -33,7 +33,7 @@ export default async function ConfirmationPage({ searchParams }: PageProps) {
               {session_id ?? bookingId ?? 'N/A'}
             </p>
             {mock && (
-              <p className="text-xs text-gold mt-1">(Development mode — no real payment processed)</p>
+              <p className="text-xs text-gold mt-1">(Development mode)</p>
             )}
           </div>
         )}

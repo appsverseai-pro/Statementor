@@ -13,6 +13,40 @@ const bookingSchema = z.object({
   sessionDate: z.string().datetime(),
 })
 
+// Sessions are free — as soon as a booking comes in we email the student their
+// invite and notify the mentor. Best-effort: never block the booking on email.
+async function sendInvites(data: z.infer<typeof bookingSchema>) {
+  try {
+    const { getMentorById } = await import('@/lib/google-sheets')
+    const mentor = await getMentorById(data.mentorId)
+    if (!mentor) return
+
+    const { sendBookingConfirmation, sendMentorNotification } = await import('@/lib/resend')
+
+    await sendBookingConfirmation({
+      studentEmail: data.studentEmail,
+      studentName: data.studentName,
+      mentorName: mentor.name,
+      instrument: data.studentInstrument,
+      sessionDate: data.sessionDate,
+      sessionLength: data.sessionLength,
+      sessionGoals: data.sessionGoals,
+    })
+
+    await sendMentorNotification({
+      mentorEmail: mentor.email,
+      mentorName: mentor.name,
+      studentName: data.studentName,
+      studentInstrument: data.studentInstrument,
+      sessionDate: data.sessionDate,
+      sessionLength: data.sessionLength,
+      sessionGoals: data.sessionGoals,
+    })
+  } catch (err) {
+    console.error('Failed to send booking invites:', err)
+  }
+}
+
 export async function POST(request: NextRequest) {
   // Rate limit: 10 booking submissions per IP per minute
   const ip = getClientIp(request)
@@ -30,6 +64,7 @@ export async function POST(request: NextRequest) {
     if (!supabaseUrl || supabaseUrl === 'your_supabase_url') {
       // Return a mock booking ID for development
       const mockId = `mock-${Date.now()}`
+      await sendInvites(data)
       return NextResponse.json({ bookingId: mockId }, { status: 201 })
     }
 
@@ -46,8 +81,8 @@ export async function POST(request: NextRequest) {
         session_goals: data.sessionGoals,
         session_length: data.sessionLength,
         session_date: data.sessionDate,
-        booking_status: 'pending',
-        payment_status: 'unpaid',
+        booking_status: 'confirmed',
+        payment_status: 'free',
       })
       .select('id')
       .single()
@@ -56,6 +91,8 @@ export async function POST(request: NextRequest) {
       console.error('Supabase insert error:', error)
       return NextResponse.json({ error: 'Failed to create booking' }, { status: 500 })
     }
+
+    await sendInvites(data)
 
     return NextResponse.json({ bookingId: booking.id }, { status: 201 })
   } catch (err) {

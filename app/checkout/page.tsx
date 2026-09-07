@@ -13,9 +13,9 @@ export default function CheckoutPage() {
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-navy/10 mx-auto mb-4">
           <ShieldCheck className="h-8 w-8 text-navy" />
         </div>
-        <h1 className="text-2xl font-bold text-navy mb-2">Redirecting to payment...</h1>
+        <h1 className="text-2xl font-bold text-navy mb-2">All set!</h1>
         <p className="text-navy/60 mb-8">
-          You will be redirected to our secure Stripe checkout. If you are not redirected, please go back and try again.
+          StateMentor sessions are free. Head back to the mentors page to book a session — we&apos;ll email your invite.
         </p>
         <Link
           href="/mentors"

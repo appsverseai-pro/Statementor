@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getMentorById } from '@/lib/google-sheets'
-import { formatCurrency } from '@/lib/utils'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
 import StarRating from '@/components/reviews/StarRating'
@@ -174,10 +173,8 @@ export default async function MentorProfilePage({ params }: PageProps) {
           <div className="lg:col-span-1">
             <div className="sticky top-24 rounded-2xl border border-navy/10 bg-white p-6 shadow-md">
               <div className="text-center mb-5">
-                <div className="text-3xl font-bold text-navy">
-                  {formatCurrency(mentor.sessionPrice)}
-                </div>
-                <div className="text-sm text-navy/50">per hour</div>
+                <div className="text-3xl font-bold text-navy">Free</div>
+                <div className="text-sm text-navy/50">peer mentorship</div>
               </div>
 
               <div className="space-y-3 mb-5">
@@ -198,7 +195,7 @@ export default async function MentorProfilePage({ params }: PageProps) {
               </Link>
 
               <p className="mt-3 text-xs text-center text-navy/40">
-                Secure payment via Stripe
+                Free session — invite sent to your email
               </p>
             </div>
           </div>

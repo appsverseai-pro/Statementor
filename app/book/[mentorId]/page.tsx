@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getMentorById } from '@/lib/google-sheets'
-import { formatCurrency } from '@/lib/utils'
 import BookingForm from '@/components/booking/BookingForm'
 import Badge from '@/components/ui/Badge'
 import { Award, MapPin } from 'lucide-react'
@@ -91,10 +90,8 @@ export default async function BookingPage({ params }: PageProps) {
 
               <div className="border-t border-navy/10 pt-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-navy/60">Starting at</span>
-                  <span className="font-bold text-navy">
-                    {formatCurrency(mentor.sessionPrice / 2)} / 30 min
-                  </span>
+                  <span className="text-navy/60">Cost</span>
+                  <span className="font-bold text-navy">Free · 30 or 60 min</span>
                 </div>
               </div>
             </div>
