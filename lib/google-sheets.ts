@@ -278,7 +278,11 @@ function parseRow(row: string[]): Mentor | null {
 // main source of the "couple of seconds" delay. Writes call clearMentorsCache()
 // so admin edits show up immediately.
 let mentorsCache: { data: Mentor[]; expires: number } | null = null
-const MENTORS_TTL_MS = 60_000
+// Short TTL: long enough to absorb bursts of navigation (which was the original
+// slowness), short enough that an admin edit shows up on the public site almost
+// immediately even though the cache lives per-server-instance and can't be
+// invalidated across instances.
+const MENTORS_TTL_MS = 5_000
 
 export function clearMentorsCache(): void {
   mentorsCache = null
