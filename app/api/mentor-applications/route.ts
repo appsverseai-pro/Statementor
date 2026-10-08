@@ -17,7 +17,7 @@ const applicationSchema = z.object({
   why: z.string().min(10).max(2000),
 })
 
-const APPLICATIONS_EMAIL = 'appsverseai@gmail.com'
+const APPLICATIONS_EMAIL = 'statementorca@gmail.com'
 
 function escapeHtml(value: string): string {
   return value

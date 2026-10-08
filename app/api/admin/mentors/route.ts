@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { z } from 'zod'
-import { getMentors, upsertMentor, type Mentor } from '@/lib/google-sheets'
+import { getMentors, upsertMentor, clearMentorsCache, type Mentor } from '@/lib/google-sheets'
 
 function isAuthenticated(cookieStore: Awaited<ReturnType<typeof cookies>>) {
   return cookieStore.get('admin_session')?.value === 'authenticated'
@@ -30,6 +30,9 @@ export async function GET() {
     if (!isAuthenticated(cookieStore)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+    // Admin must always see the true current state, never a cached copy, so
+    // edits never appear to "revert" on the next load.
+    clearMentorsCache()
     const mentors = await getMentors()
     return NextResponse.json(mentors)
   } catch (err) {

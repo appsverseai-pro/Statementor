@@ -155,6 +155,13 @@ export default function AdminMentorsPage() {
         const body = await res.json()
         throw new Error(body.error ?? 'Failed to save')
       }
+      const body = await res.json().catch(() => ({}))
+      // The API returns 200 with persisted:false when the DB write didn't
+      // actually stick (e.g. table/column issue). Surface that instead of
+      // pretending it saved.
+      if (body && body.persisted === false) {
+        throw new Error(body.note ?? 'Saved in memory only — the change was not stored in the database.')
+      }
       await fetchMentors()
       cancelForm()
     } catch (err) {
