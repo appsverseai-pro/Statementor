@@ -215,13 +215,19 @@ function mentorToRow(mentor: Mentor): MentorRow {
   }
 }
 
-async function getMentorsFromSupabase(): Promise<Mentor[] | null> {
+// Columns needed for list/browse views — deliberately EXCLUDES profile_photo,
+// which is stored as a (large) base64 data URL. Pulling it for every card made
+// the /mentors page heavy; list cards fall back to initials avatars instead.
+const LIST_COLUMNS =
+  'id, name, instrument, school, bio, years_in_all_state, achievements, teaching_areas, session_price, available_days, available_times, email, active'
+
+async function getMentorsFromSupabase(lite = false): Promise<Mentor[] | null> {
   const supabase = getServiceClient()
   if (!supabase) return null
 
   const { data, error } = await supabase
     .from('mentors')
-    .select('*')
+    .select(lite ? LIST_COLUMNS : '*')
     .order('name', { ascending: true })
 
   if (error) {
@@ -231,7 +237,7 @@ async function getMentorsFromSupabase(): Promise<Mentor[] | null> {
     return null
   }
 
-  return (data as MentorRow[]).map(rowToMentor)
+  return (data as unknown as MentorRow[]).map(rowToMentor)
 }
 
 function getAuth() {
@@ -278,6 +284,7 @@ function parseRow(row: string[]): Mentor | null {
 // main source of the "couple of seconds" delay. Writes call clearMentorsCache()
 // so admin edits show up immediately.
 let mentorsCache: { data: Mentor[]; expires: number } | null = null
+let mentorsLiteCache: { data: Mentor[]; expires: number } | null = null
 // Short TTL: long enough to absorb bursts of navigation (which was the original
 // slowness), short enough that an admin edit shows up on the public site almost
 // immediately even though the cache lives per-server-instance and can't be
@@ -286,23 +293,35 @@ const MENTORS_TTL_MS = 5_000
 
 export function clearMentorsCache(): void {
   mentorsCache = null
+  mentorsLiteCache = null
 }
 
 export async function getMentors(): Promise<Mentor[]> {
   if (mentorsCache && mentorsCache.expires > Date.now()) {
     return mentorsCache.data
   }
-  const data = await loadMentors()
+  const data = await loadMentors(false)
   mentorsCache = { data, expires: Date.now() + MENTORS_TTL_MS }
   return data
 }
 
-async function loadMentors(): Promise<Mentor[]> {
+// Lightweight list without profile photos — used by browse/list pages so the
+// heavy base64 images aren't shipped for every card.
+async function getMentorsLite(): Promise<Mentor[]> {
+  if (mentorsLiteCache && mentorsLiteCache.expires > Date.now()) {
+    return mentorsLiteCache.data
+  }
+  const data = await loadMentors(true)
+  mentorsLiteCache = { data, expires: Date.now() + MENTORS_TTL_MS }
+  return data
+}
+
+async function loadMentors(lite: boolean): Promise<Mentor[]> {
   const auth = getAuth()
 
   if (!auth) {
     // Prefer Supabase persistence when configured.
-    const fromSupabase = await getMentorsFromSupabase()
+    const fromSupabase = await getMentorsFromSupabase(lite)
     if (fromSupabase !== null) return fromSupabase
 
     // Otherwise return mock data (plus any in-memory additions).
@@ -339,7 +358,8 @@ export async function getMentorById(id: string): Promise<Mentor | null> {
 }
 
 export async function getActiveMentors(): Promise<Mentor[]> {
-  const mentors = await getMentors()
+  // List/browse views use the lightweight (photo-free) fetch for speed.
+  const mentors = await getMentorsLite()
   return mentors.filter((m) => m.active)
 }
 
