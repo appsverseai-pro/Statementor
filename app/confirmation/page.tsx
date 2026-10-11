@@ -11,8 +11,19 @@ interface PageProps {
   searchParams: Promise<{ bookingId?: string; session_id?: string; mock?: string }>
 }
 
+// Turn a long booking id/UUID into a short, friendly 5-character reference
+// (deterministic, so the same booking always shows the same code).
+function shortRef(id: string): string {
+  let h = 0
+  for (let i = 0; i < id.length; i++) {
+    h = (h * 31 + id.charCodeAt(i)) >>> 0
+  }
+  return h.toString(36).toUpperCase().slice(0, 5).padStart(5, '0')
+}
+
 export default async function ConfirmationPage({ searchParams }: PageProps) {
   const { bookingId, session_id, mock } = await searchParams
+  const reference = bookingId || session_id ? shortRef((bookingId ?? session_id)!) : null
 
   return (
     <main className="py-16">
@@ -42,11 +53,11 @@ export default async function ConfirmationPage({ searchParams }: PageProps) {
           </p>
         </div>
 
-        {(bookingId || session_id) && (
+        {reference && (
           <div className="rounded-xl border border-navy/10 bg-white p-4 mb-6 text-left">
             <p className="text-xs text-navy/50 mb-1">Booking Reference</p>
-            <p className="font-mono text-sm text-navy font-medium">
-              {session_id ?? bookingId ?? 'N/A'}
+            <p className="text-lg text-navy font-bold tracking-widest">
+              {reference}
             </p>
             {mock && (
               <p className="text-xs text-gold mt-1">(Development mode)</p>
