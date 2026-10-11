@@ -1,42 +1,24 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { getActiveMentors } from '@/lib/google-sheets'
-import MentorGrid from '@/components/mentors/MentorGrid'
-import MentorFilters from '@/components/mentors/MentorFilters'
-import type { Mentor } from '@/lib/google-sheets'
+import MentorsBrowser from '@/components/mentors/MentorsBrowser'
 
 export const metadata: Metadata = {
   title: 'Browse Mentors',
   description: 'Browse All-State music mentors. Find personalized coaching for violin, trumpet, flute, voice, and more.',
 }
 
-function sortMentors(mentors: Mentor[], sort: string): Mentor[] {
-  switch (sort) {
-    case 'price-asc':
-      return [...mentors].sort((a, b) => a.sessionPrice - b.sessionPrice)
-    case 'price-desc':
-      return [...mentors].sort((a, b) => b.sessionPrice - a.sessionPrice)
-    case 'experience':
-      return [...mentors].sort((a, b) => b.yearsInAllState - a.yearsInAllState)
-    default:
-      return mentors
-  }
-}
+// Render statically and refresh the mentor list in the background every 60s.
+// This keeps the page instant to load (served from cache) instead of running a
+// fresh database query and cold start on every click. Filtering/sorting runs in
+// the browser, so the URL query no longer forces dynamic rendering.
+export const revalidate = 60
 
-interface PageProps {
-  searchParams: Promise<{ sort?: string; instrument?: string }>
-}
-
-export default async function MentorsPage({ searchParams }: PageProps) {
-  const { sort = 'rating', instrument = '' } = await searchParams
+export default async function MentorsPage() {
   const mentors = await getActiveMentors()
   const instruments = Array.from(new Set(mentors.map((m) => m.instrument))).sort((a, b) =>
     a.localeCompare(b)
   )
-  const filtered = instrument
-    ? mentors.filter((m) => m.instrument.toLowerCase() === instrument.toLowerCase())
-    : mentors
-  const sorted = sortMentors(filtered, sort)
 
   return (
     <main className="py-10">
@@ -49,10 +31,8 @@ export default async function MentorsPage({ searchParams }: PageProps) {
         </div>
 
         <Suspense fallback={null}>
-          <MentorFilters totalCount={sorted.length} instruments={instruments} />
+          <MentorsBrowser mentors={mentors} instruments={instruments} />
         </Suspense>
-
-        <MentorGrid mentors={sorted} />
       </div>
     </main>
   )
