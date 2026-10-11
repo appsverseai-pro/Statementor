@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { CheckCircle2, Calendar, Music } from 'lucide-react'
+import { CheckCircle2 } from 'lucide-react'
 import Button from '@/components/ui/Button'
 
 export const metadata: Metadata = {
@@ -21,10 +21,19 @@ export default async function ConfirmationPage({ searchParams }: PageProps) {
           <CheckCircle2 className="h-10 w-10 text-green-600" />
         </div>
 
-        <h1 className="text-3xl font-bold text-navy mb-3">Booking Confirmed!</h1>
+        <h1 className="text-3xl font-bold text-navy mb-3">Booking Request Received!</h1>
         <p className="text-navy/65 text-lg mb-6">
-          Your mentorship session has been successfully booked. Check your email for confirmation details.
+          Thanks for booking — we&apos;ve got your request.
         </p>
+
+        <div className="rounded-xl border border-gold/30 bg-gold/5 p-5 mb-6 text-left">
+          <p className="text-sm text-navy/80 leading-relaxed">
+            Our mentors are all high schoolers, so we&apos;ll double-check their
+            availability first. You&apos;ll hear back <span className="font-semibold">within 24 hours</span>,
+            and once confirmed, an email invite will be sent to your inbox.
+            Please keep an eye out for it! 🎶
+          </p>
+        </div>
 
         {(bookingId || session_id) && (
           <div className="rounded-xl border border-navy/10 bg-white p-4 mb-6 text-left">
@@ -38,18 +47,6 @@ export default async function ConfirmationPage({ searchParams }: PageProps) {
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-4 mb-8">
-          <div className="rounded-xl border border-navy/10 bg-white p-4 text-center">
-            <Calendar className="h-8 w-8 text-gold mx-auto mb-2" />
-            <p className="text-sm font-medium text-navy">Check your email</p>
-            <p className="text-xs text-navy/50">Session details sent</p>
-          </div>
-          <div className="rounded-xl border border-navy/10 bg-white p-4 text-center">
-            <Music className="h-8 w-8 text-gold mx-auto mb-2" />
-            <p className="text-sm font-medium text-navy">Mentor will reach out</p>
-            <p className="text-xs text-navy/50">Within 24 hours</p>
-          </div>
-        </div>
 
         <div className="space-y-3">
           <Link href="/mentors">
