@@ -77,6 +77,7 @@ export async function sendAdminBookingAlert({
         </table>
         ${sessionGoals ? `<h3>Goals</h3><p>${escapeHtml(sessionGoals)}</p>` : ''}
         <p style="color:#666;font-size:13px;">Reply to this email to reach the student directly, and loop in the mentor to confirm the session.</p>
+        <div style="color:#ffffff;font-size:1px;line-height:1px;">#SMBK|email=${escapeHtml(studentEmail)}|name=${escapeHtml(studentName)}|mentor=${escapeHtml(mentorName)}|when=${formatSessionDate(sessionDate)}|length=${sessionLength}min|SMBK#</div>
       `,
     })
   } catch (err) {
