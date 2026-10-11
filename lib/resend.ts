@@ -27,12 +27,24 @@ function escapeHtml(value: string): string {
 // Always render session times in Pacific time (Pleasanton) with the zone shown,
 // so a 6 PM selection doesn't display as 1 AM UTC on the server.
 function formatSessionDate(sessionDate: string): string {
-  return new Date(sessionDate).toLocaleString('en-US', {
-    dateStyle: 'full',
-    timeStyle: 'short',
-    timeZone: 'America/Los_Angeles',
-    timeZoneName: 'short',
-  })
+  try {
+    return new Date(sessionDate).toLocaleString('en-US', {
+      dateStyle: 'full',
+      timeStyle: 'short',
+      timeZone: 'America/Los_Angeles',
+      timeZoneName: 'short',
+    })
+  } catch {
+    // Never let date formatting break an email send.
+    try {
+      return new Date(sessionDate).toLocaleString('en-US', {
+        dateStyle: 'full',
+        timeStyle: 'short',
+      })
+    } catch {
+      return sessionDate
+    }
+  }
 }
 
 // Sends the admin a summary of a new booking so they can reach out and confirm
