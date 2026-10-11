@@ -19,16 +19,22 @@ const bookingSchema = z.object({
 async function sendInvites(data: z.infer<typeof bookingSchema>) {
   try {
     const { getMentorById } = await import('@/lib/google-sheets')
-    const mentor = await getMentorById(data.mentorId)
-    if (!mentor) return
-
     const { sendBookingConfirmation, sendMentorNotification, sendAdminBookingAlert } = await import('@/lib/resend')
+
+    // Look up the mentor for nicer details, but NEVER let a failed lookup stop
+    // the admin alert — the admin must be notified of every booking.
+    let mentor = null
+    try {
+      mentor = await getMentorById(data.mentorId)
+    } catch (err) {
+      console.error('Mentor lookup failed during booking notify:', err)
+    }
 
     // Primary reliable path: alert the admin so they can manually confirm.
     // This delivers to the Resend account owner even before a domain is verified.
     await sendAdminBookingAlert({
-      mentorName: mentor.name,
-      mentorEmail: mentor.email,
+      mentorName: mentor?.name ?? `(mentor id ${data.mentorId})`,
+      mentorEmail: mentor?.email ?? 'unknown',
       studentName: data.studentName,
       studentEmail: data.studentEmail,
       studentGrade: data.studentGrade,
@@ -37,6 +43,8 @@ async function sendInvites(data: z.infer<typeof bookingSchema>) {
       sessionLength: data.sessionLength,
       sessionGoals: data.sessionGoals,
     })
+
+    if (!mentor) return
 
     await sendBookingConfirmation({
       studentEmail: data.studentEmail,
