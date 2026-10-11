@@ -24,6 +24,17 @@ function escapeHtml(value: string): string {
     .replace(/"/g, '&quot;')
 }
 
+// Always render session times in Pacific time (Pleasanton) with the zone shown,
+// so a 6 PM selection doesn't display as 1 AM UTC on the server.
+function formatSessionDate(sessionDate: string): string {
+  return new Date(sessionDate).toLocaleString('en-US', {
+    dateStyle: 'full',
+    timeStyle: 'short',
+    timeZone: 'America/Los_Angeles',
+    timeZoneName: 'short',
+  })
+}
+
 // Sends the admin a summary of a new booking so they can reach out and confirm
 // the session manually. Best-effort — never throws.
 export async function sendAdminBookingAlert({
@@ -31,6 +42,7 @@ export async function sendAdminBookingAlert({
   mentorEmail,
   studentName,
   studentEmail,
+  studentGrade,
   studentInstrument,
   sessionDate,
   sessionLength,
@@ -40,6 +52,7 @@ export async function sendAdminBookingAlert({
   mentorEmail: string
   studentName: string
   studentEmail: string
+  studentGrade?: string
   studentInstrument: string
   sessionDate: string
   sessionLength: number
@@ -56,9 +69,10 @@ export async function sendAdminBookingAlert({
         <table style="border-collapse:collapse;">
           <tr><td style="padding:4px 12px 4px 0;"><b>Mentor</b></td><td>${escapeHtml(mentorName)} (${escapeHtml(mentorEmail)})</td></tr>
           <tr><td style="padding:4px 12px 4px 0;"><b>Student</b></td><td>${escapeHtml(studentName)}</td></tr>
+          ${studentGrade ? `<tr><td style="padding:4px 12px 4px 0;"><b>Grade</b></td><td>${escapeHtml(studentGrade)}</td></tr>` : ''}
           <tr><td style="padding:4px 12px 4px 0;"><b>Student email</b></td><td>${escapeHtml(studentEmail)}</td></tr>
           <tr><td style="padding:4px 12px 4px 0;"><b>Instrument</b></td><td>${escapeHtml(studentInstrument)}</td></tr>
-          <tr><td style="padding:4px 12px 4px 0;"><b>Date & time</b></td><td>${new Date(sessionDate).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })}</td></tr>
+          <tr><td style="padding:4px 12px 4px 0;"><b>Date & time</b></td><td>${formatSessionDate(sessionDate)}</td></tr>
           <tr><td style="padding:4px 12px 4px 0;"><b>Length</b></td><td>${sessionLength} minutes</td></tr>
         </table>
         ${sessionGoals ? `<h3>Goals</h3><p>${escapeHtml(sessionGoals)}</p>` : ''}
@@ -120,7 +134,7 @@ export async function sendBookingConfirmation({
                 </tr>
                 <tr>
                   <td style="padding: 6px 0; color: #666;">Date & Time:</td>
-                  <td style="padding: 6px 0; color: #1B2A4A; font-weight: bold;">${new Date(sessionDate).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })}</td>
+                  <td style="padding: 6px 0; color: #1B2A4A; font-weight: bold;">${formatSessionDate(sessionDate)}</td>
                 </tr>
                 <tr>
                   <td style="padding: 6px 0; color: #666;">Duration:</td>
@@ -198,7 +212,7 @@ export async function sendMentorNotification({
                 </tr>
                 <tr>
                   <td style="padding: 6px 0; color: #666;">Date & Time:</td>
-                  <td style="padding: 6px 0; color: #1B2A4A; font-weight: bold;">${new Date(sessionDate).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })}</td>
+                  <td style="padding: 6px 0; color: #1B2A4A; font-weight: bold;">${formatSessionDate(sessionDate)}</td>
                 </tr>
                 <tr>
                   <td style="padding: 6px 0; color: #666;">Duration:</td>

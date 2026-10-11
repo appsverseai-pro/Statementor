@@ -15,6 +15,7 @@ import { Calendar, Clock, User, Mail, Music } from 'lucide-react'
 const bookingSchema = z.object({
   studentName: z.string().min(2, 'Name must be at least 2 characters'),
   studentEmail: z.string().email('Please enter a valid email'),
+  studentGrade: z.string().min(1, 'Please select your grade'),
   studentInstrument: z.string().min(2, 'Please enter your instrument'),
   sessionGoals: z.string().optional(),
   sessionLength: z.enum(['30', '60']),
@@ -61,6 +62,7 @@ export default function BookingForm({ mentor }: BookingFormProps) {
           mentorId: mentor.id,
           studentName: data.studentName,
           studentEmail: data.studentEmail,
+          studentGrade: data.studentGrade,
           studentInstrument: data.studentInstrument,
           sessionGoals: data.sessionGoals,
           sessionLength: parseInt(data.sessionLength, 10),
@@ -160,6 +162,25 @@ export default function BookingForm({ mentor }: BookingFormProps) {
               error={errors.studentEmail?.message}
               {...register('studentEmail')}
             />
+          </div>
+          <div className="relative">
+            <label className="block text-sm font-medium text-navy mb-1.5">
+              Grade <span className="text-burgundy">*</span>
+            </label>
+            <select
+              required
+              defaultValue=""
+              {...register('studentGrade')}
+              className="w-full rounded-lg border border-navy/20 bg-white px-3 py-2.5 text-navy focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
+            >
+              <option value="" disabled>Select your grade</option>
+              {['6th', '7th', '8th', '9th', '10th', '11th', '12th'].map((g) => (
+                <option key={g} value={g}>{g} grade</option>
+              ))}
+            </select>
+            {errors.studentGrade?.message && (
+              <p className="mt-1 text-sm text-burgundy">{errors.studentGrade.message}</p>
+            )}
           </div>
           <div className="relative">
             <Input
