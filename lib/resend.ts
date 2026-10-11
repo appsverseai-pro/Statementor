@@ -10,6 +10,66 @@ export const resend = new Resend(process.env.RESEND_API_KEY ?? 'placeholder')
 export const EMAIL_FROM =
   process.env.EMAIL_FROM ?? 'StateMentor <onboarding@resend.dev>'
 
+// Where booking alerts are sent so the admin can manually confirm each session.
+// Defaults to the Resend account owner's address, which delivers even before a
+// custom domain is verified.
+export const ADMIN_NOTIFY_EMAIL =
+  process.env.ADMIN_NOTIFY_EMAIL ?? 'appsverseai@gmail.com'
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+// Sends the admin a summary of a new booking so they can reach out and confirm
+// the session manually. Best-effort — never throws.
+export async function sendAdminBookingAlert({
+  mentorName,
+  mentorEmail,
+  studentName,
+  studentEmail,
+  studentInstrument,
+  sessionDate,
+  sessionLength,
+  sessionGoals,
+}: {
+  mentorName: string
+  mentorEmail: string
+  studentName: string
+  studentEmail: string
+  studentInstrument: string
+  sessionDate: string
+  sessionLength: number
+  sessionGoals?: string
+}) {
+  try {
+    await resend.emails.send({
+      from: EMAIL_FROM,
+      to: ADMIN_NOTIFY_EMAIL,
+      replyTo: studentEmail,
+      subject: `New booking: ${studentName} → ${mentorName}`,
+      html: `
+        <h2>New StateMentor Booking</h2>
+        <table style="border-collapse:collapse;">
+          <tr><td style="padding:4px 12px 4px 0;"><b>Mentor</b></td><td>${escapeHtml(mentorName)} (${escapeHtml(mentorEmail)})</td></tr>
+          <tr><td style="padding:4px 12px 4px 0;"><b>Student</b></td><td>${escapeHtml(studentName)}</td></tr>
+          <tr><td style="padding:4px 12px 4px 0;"><b>Student email</b></td><td>${escapeHtml(studentEmail)}</td></tr>
+          <tr><td style="padding:4px 12px 4px 0;"><b>Instrument</b></td><td>${escapeHtml(studentInstrument)}</td></tr>
+          <tr><td style="padding:4px 12px 4px 0;"><b>Date & time</b></td><td>${new Date(sessionDate).toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })}</td></tr>
+          <tr><td style="padding:4px 12px 4px 0;"><b>Length</b></td><td>${sessionLength} minutes</td></tr>
+        </table>
+        ${sessionGoals ? `<h3>Goals</h3><p>${escapeHtml(sessionGoals)}</p>` : ''}
+        <p style="color:#666;font-size:13px;">Reply to this email to reach the student directly, and loop in the mentor to confirm the session.</p>
+      `,
+    })
+  } catch (err) {
+    console.error('Failed to send admin booking alert:', err)
+  }
+}
+
 export async function sendBookingConfirmation({
   studentEmail,
   studentName,

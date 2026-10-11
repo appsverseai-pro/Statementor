@@ -33,17 +33,34 @@ const STATUS_COLORS: Record<string, 'default' | 'gold' | 'green' | 'burgundy' | 
 export default function AdminBookingsPage() {
   const router = useRouter()
   const [bookings, setBookings] = useState<Booking[]>([])
+  const [mentorNames, setMentorNames] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState<string | null>(null)
 
   const fetchBookings = useCallback(async () => {
-    const res = await fetch('/api/bookings')
-    if (res.status === 401) {
+    const [bookingsRes, mentorsRes] = await Promise.all([
+      fetch('/api/bookings'),
+      fetch('/api/admin/mentors'),
+    ])
+    if (bookingsRes.status === 401) {
       router.push('/admin/login')
       return
     }
-    const data = await res.json()
+    const data = await bookingsRes.json()
     setBookings(Array.isArray(data) ? data : [])
+
+    // Build an id → name lookup so each booking shows the chosen mentor.
+    try {
+      const mentors = await mentorsRes.json()
+      if (Array.isArray(mentors)) {
+        const map: Record<string, string> = {}
+        for (const m of mentors) map[m.id] = m.name
+        setMentorNames(map)
+      }
+    } catch {
+      // Non-fatal: fall back to showing the mentor id.
+    }
+
     setLoading(false)
   }, [router])
 
@@ -102,6 +119,9 @@ export default function AdminBookingsPage() {
                       </Badge>
                     </div>
                     <p className="text-sm text-navy/60">{booking.student_email}</p>
+                    <p className="text-sm font-medium text-navy mt-1">
+                      Mentor: {mentorNames[booking.mentor_id] ?? `(ID ${booking.mentor_id})`}
+                    </p>
                     <p className="text-sm text-navy/60 mt-1">
                       {formatDate(booking.session_date)} • {booking.session_length} min
                     </p>

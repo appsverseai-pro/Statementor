@@ -21,7 +21,20 @@ async function sendInvites(data: z.infer<typeof bookingSchema>) {
     const mentor = await getMentorById(data.mentorId)
     if (!mentor) return
 
-    const { sendBookingConfirmation, sendMentorNotification } = await import('@/lib/resend')
+    const { sendBookingConfirmation, sendMentorNotification, sendAdminBookingAlert } = await import('@/lib/resend')
+
+    // Primary reliable path: alert the admin so they can manually confirm.
+    // This delivers to the Resend account owner even before a domain is verified.
+    await sendAdminBookingAlert({
+      mentorName: mentor.name,
+      mentorEmail: mentor.email,
+      studentName: data.studentName,
+      studentEmail: data.studentEmail,
+      studentInstrument: data.studentInstrument,
+      sessionDate: data.sessionDate,
+      sessionLength: data.sessionLength,
+      sessionGoals: data.sessionGoals,
+    })
 
     await sendBookingConfirmation({
       studentEmail: data.studentEmail,
