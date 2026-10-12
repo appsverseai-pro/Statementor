@@ -70,22 +70,18 @@ function sendConfirmation(b) {
   var firstName = (b.name || '').split(' ')[0] || 'there';
   var subject = 'We got your StateMentor booking request!';
 
-  // HTML numeric entities for emoji so they never garble from paste/encoding.
-  var MAILBOX = '&#128236;'; // mailbox
-  var NOTES   = '&#127926;'; // musical notes
-
   var html =
     '<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;">' +
       '<div style="background:#1E1A47;padding:24px;border-radius:12px 12px 0 0;text-align:center;">' +
         '<h1 style="color:#8368D6;margin:0;font-size:24px;">StateMentor</h1>' +
       '</div>' +
       '<div style="border:1px solid #e5e5ef;border-top:none;border-radius:0 0 12px 12px;padding:28px;color:#1E1A47;">' +
-        '<h2 style="margin-top:0;">Thanks, ' + escapeHtmlJs(firstName) + '! ' + MAILBOX + ' What happens next</h2>' +
+        '<h2 style="margin-top:0;">Thanks, ' + escapeHtmlJs(firstName) + '! What happens next</h2>' +
         '<p style="line-height:1.6;color:#333;">Our mentors are all <b>high schoolers</b>, so we\'ll ' +
         'double-check their availability first. You\'ll hear back <b>within 24 hours</b>.</p>' +
         '<p style="line-height:1.6;color:#333;">Once your session is confirmed, we\'ll send an ' +
-        '<b>email invite to your inbox</b> with all the details. Please keep an eye out for it &mdash; ' +
-        'and check your spam folder just in case! ' + NOTES + '</p>' +
+        '<b>email invite to your inbox</b> with all the details. Please keep an eye out for it, ' +
+        'and check your spam folder just in case!</p>' +
         '<p style="color:#888;font-size:13px;margin-top:24px;">&mdash; The StateMentor Team</p>' +
       '</div>' +
     '</div>';
