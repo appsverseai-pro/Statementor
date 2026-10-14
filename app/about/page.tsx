@@ -41,10 +41,10 @@ export default function AboutPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               {[
-                { value: '50+', label: 'All-State Mentors' },
-                { value: '15+', label: 'Instruments' },
-                { value: '200+', label: 'Sessions Completed' },
-                { value: '4.9/5', label: 'Average Rating' },
+                { value: 'Free', label: 'Every session' },
+                { value: 'Peer', label: 'Student-to-student' },
+                { value: 'Real', label: 'All-State musicians' },
+                { value: 'Local', label: 'From your community' },
               ].map(({ value, label }) => (
                 <div
                   key={label}
