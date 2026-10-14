@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import { getMentorsByInstrument, getUniqueInstruments, type Mentor } from '@/lib/google-sheets'
-import { slugToInstrument } from '@/lib/utils'
+import { slugify, slugToInstrument } from '@/lib/utils'
 import MentorGrid from '@/components/mentors/MentorGrid'
 import MentorFilters from '@/components/mentors/MentorFilters'
 
@@ -11,9 +11,18 @@ interface PageProps {
   searchParams: Promise<{ sort?: string }>
 }
 
+// Resolve a URL slug back to the REAL instrument name by slugifying each known
+// instrument and comparing — this round-trips any name (dashes, "All State",
+// punctuation) instead of guessing from the slug. Returns null if unknown.
+async function resolveInstrument(slug: string): Promise<string | null> {
+  const all = await getUniqueInstruments()
+  const match = all.find((i) => slugify(i.instrument) === slug)
+  return match ? match.instrument : null
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { instrument: slug } = await params
-  const instrument = slugToInstrument(slug)
+  const instrument = (await resolveInstrument(slug)) ?? slugToInstrument(slug)
   return {
     title: `${instrument} Mentors`,
     description: `Find All-State ${instrument} mentors for personalized audition coaching and technique improvement.`,
@@ -23,16 +32,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export async function generateStaticParams() {
   const instruments = await getUniqueInstruments()
   return instruments.map(({ instrument }) => ({
-    instrument: instrument.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    instrument: slugify(instrument),
   }))
 }
 
 function sortMentors(mentors: Mentor[], sort: string): Mentor[] {
   switch (sort) {
-    case 'price-asc':
-      return [...mentors].sort((a, b) => a.sessionPrice - b.sessionPrice)
-    case 'price-desc':
-      return [...mentors].sort((a, b) => b.sessionPrice - a.sessionPrice)
     case 'experience':
       return [...mentors].sort((a, b) => b.yearsInAllState - a.yearsInAllState)
     default:
@@ -44,12 +49,9 @@ export default async function InstrumentPage({ params, searchParams }: PageProps
   const { instrument: slug } = await params
   const { sort = 'rating' } = await searchParams
 
-  const instrument = slugToInstrument(slug)
-  const allInstruments = await getUniqueInstruments()
-  const instrumentNames = allInstruments.map((i) => i.instrument.toLowerCase())
-
-  // Validate the instrument exists
-  if (!instrumentNames.includes(instrument.toLowerCase())) {
+  // Match the slug against the real instrument list; 404 only if truly unknown.
+  const instrument = await resolveInstrument(slug)
+  if (!instrument) {
     notFound()
   }
 
