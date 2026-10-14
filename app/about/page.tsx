@@ -18,7 +18,17 @@ export default function AboutPage() {
           </h1>
           <blockquote className="text-cream/80 text-lg leading-relaxed italic max-w-2xl mx-auto">
             &ldquo;When I was preparing for the audition for All State, I wish I had a mentor that I can just ask anything, so I know exactly what to expect - the prep, competition, and the actual experience at All State&rdquo;
-            <footer className="mt-4 not-italic text-gold text-sm font-semibold">— Founder, StateMentor</footer>
+            <footer className="mt-4 not-italic text-gold text-sm font-semibold">
+              — Aiden Shan, Founder of StateMentor
+              <a
+                href="https://www.instagram.com/shanshan.music"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block mt-1 font-normal text-cream/70 hover:text-gold transition-colors"
+              >
+                @shanshan.music
+              </a>
+            </footer>
           </blockquote>
         </div>
       </section>
