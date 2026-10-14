@@ -64,21 +64,17 @@ export default function HowItWorks() {
           ))}
         </div>
 
-        {/* Student quote / social proof */}
+        {/* Call to action */}
         <div className="mt-14 rounded-2xl bg-white border border-gold/20 p-6 sm:p-8 text-center shadow-sm max-w-2xl mx-auto">
-          <div className="text-3xl mb-3">💬</div>
-          <p className="text-navy text-lg font-medium italic mb-3">
-            "I had no idea what to expect at All State auditions. My mentor had done it twice — she told me exactly what the room feels like, what the judges listen for, everything. It felt like getting advice from an older sister."
+          <p className="text-navy text-lg font-medium mb-5">
+            Ready to learn from someone who&apos;s been there?
           </p>
-          <p className="text-navy/50 text-sm">— Emma, Flute · Grade 10</p>
-          <div className="mt-4">
-            <a
-              href="/mentors"
-              className="inline-flex items-center gap-2 rounded-lg bg-navy px-6 py-3 text-cream font-semibold hover:bg-navy-light transition-colors"
-            >
-              Find your mentor 🎵
-            </a>
-          </div>
+          <a
+            href="/mentors"
+            className="inline-flex items-center gap-2 rounded-lg bg-navy px-6 py-3 text-cream font-semibold hover:bg-navy-light transition-colors"
+          >
+            Find your mentor
+          </a>
         </div>
       </div>
     </section>
