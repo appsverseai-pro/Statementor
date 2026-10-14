@@ -58,21 +58,6 @@ export default function Hero() {
           <p className="mt-5 text-cream/45 text-sm">
             Peer to peer · No account needed · Always free
           </p>
-
-          {/* Stats */}
-          <div className="mt-12 grid grid-cols-3 gap-6 border-t border-cream/10 pt-10">
-            {[
-              { value: '50+', label: 'All State Musicians', emoji: '🏆' },
-              { value: '200+', label: 'Students Helped', emoji: '🎓' },
-              { value: '4.9★', label: 'Average Rating', emoji: '⭐' },
-            ].map(({ value, label, emoji }) => (
-              <div key={label} className="text-center">
-                <div className="text-xl mb-1">{emoji}</div>
-                <div className="text-2xl sm:text-3xl font-bold text-gold">{value}</div>
-                <div className="text-xs text-cream/55 mt-1">{label}</div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 
