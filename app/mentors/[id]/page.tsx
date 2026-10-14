@@ -130,7 +130,7 @@ export default async function MentorProfilePage({ params }: PageProps) {
             <div className="rounded-2xl border border-navy/10 bg-white p-6 shadow-sm">
               <h2 className="flex items-center gap-2 text-lg font-bold text-navy mb-3">
                 <BookOpen className="h-5 w-5 text-gold" />
-                What I Teach
+                What I Can Mentor On
               </h2>
               <div className="flex flex-wrap gap-2">
                 {mentor.teachingAreas.split(',').map((area) => (
