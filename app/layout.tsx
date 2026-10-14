@@ -61,7 +61,7 @@ export default function RootLayout({
               <div>
                 <h4 className="font-semibold text-cream mb-3 text-sm">Contact</h4>
                 <ul className="space-y-2 text-sm text-cream/60">
-                  <li><a href="mailto:support@statementor.com" className="hover:text-gold transition-colors">support@statementor.com</a></li>
+                  <li><a href="mailto:statementorca@gmail.com" className="hover:text-gold transition-colors">statementorca@gmail.com</a></li>
                 </ul>
               </div>
             </div>

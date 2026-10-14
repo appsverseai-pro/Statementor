@@ -168,7 +168,7 @@ export async function sendBookingConfirmation({
               <a href="${appUrl}" style="background-color: #C9973A; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: bold;">Visit StateMentor</a>
             </div>
 
-            <p style="color: #888; font-size: 14px; margin-bottom: 0;">If you have any questions, reply to this email or contact us at support@statementor.com</p>
+            <p style="color: #888; font-size: 14px; margin-bottom: 0;">If you have any questions, reply to this email or contact us at statementorca@gmail.com</p>
           </div>
         </div>
       `,
