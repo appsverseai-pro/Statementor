@@ -39,7 +39,7 @@ export default async function ConfirmationPage({ searchParams }: PageProps) {
 
         <div className="rounded-2xl border-2 border-gold/40 bg-gold/10 p-6 mb-6 text-left">
           <p className="text-lg sm:text-xl font-bold text-navy mb-2">
-            📬 What happens next
+            What happens next
           </p>
           <p className="text-base text-navy/85 leading-relaxed">
             Our mentors are all <span className="font-semibold">high schoolers</span>, so
@@ -49,7 +49,7 @@ export default async function ConfirmationPage({ searchParams }: PageProps) {
           <p className="text-base text-navy/85 leading-relaxed mt-3">
             Once your session is confirmed, we&apos;ll send an{' '}
             <span className="font-bold text-navy">email invite to your inbox</span> with all
-            the details. Please keep an eye out for it — and check your spam folder just in case! 🎶
+            the details. Please keep an eye out for it &mdash; and check your spam folder just in case!
           </p>
         </div>
 
