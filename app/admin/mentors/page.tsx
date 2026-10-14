@@ -377,8 +377,8 @@ export default function AdminMentorsPage() {
               <thead className="bg-navy/5 border-b border-navy/10">
                 <tr>
                   <th className="text-left px-4 py-3 font-semibold text-navy/70">Name</th>
-                  <th className="text-left px-4 py-3 font-semibold text-navy/70">Instrument</th>
-                  <th className="text-left px-4 py-3 font-semibold text-navy/70">School</th>
+                  <th className="hidden sm:table-cell text-left px-4 py-3 font-semibold text-navy/70">Instrument</th>
+                  <th className="hidden sm:table-cell text-left px-4 py-3 font-semibold text-navy/70">School</th>
                   <th className="text-left px-4 py-3 font-semibold text-navy/70">Status</th>
                   <th className="text-right px-4 py-3 font-semibold text-navy/70">Actions</th>
                 </tr>
@@ -387,8 +387,8 @@ export default function AdminMentorsPage() {
                 {mentors.map((mentor) => (
                   <tr key={mentor.id} className="hover:bg-navy/2">
                     <td className="px-4 py-3 font-medium text-navy">{mentor.name}</td>
-                    <td className="px-4 py-3 text-navy/70">{mentor.instrument}</td>
-                    <td className="px-4 py-3 text-navy/70">{mentor.school}</td>
+                    <td className="hidden sm:table-cell px-4 py-3 text-navy/70">{mentor.instrument}</td>
+                    <td className="hidden sm:table-cell px-4 py-3 text-navy/70">{mentor.school}</td>
                     <td className="px-4 py-3">
                       <Badge variant={mentor.active ? 'green' : 'gray'}>
                         {mentor.active ? 'Active' : 'Inactive'}
